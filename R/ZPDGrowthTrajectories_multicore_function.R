@@ -86,7 +86,7 @@ ZPDGrowthTrajectories_multicore <- function(n.cores, output.format="wide", days,
                                           useGPU=useGPU, verbose=FALSE)
   
   
-  stopCluster(cl)
+  parallel::stopCluster(cl)
   
   
   # recombine list results into a matrix

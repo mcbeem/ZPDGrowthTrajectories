@@ -36,9 +36,10 @@ buildSchoolCurriculum <- function(start_point, width, assignment, points, n1, n3
   num.curricula <- ncol(start_point)
   
   # convert the assignment object to a data frame
-  assignment <- data.frame(assignment)
+  days <- length(assignment)
+  assignment <- data.frame(matrix(assignment, nrow=length(assignment)))
   names(assignment) <- "index"
-  assignment$day <- 1:length(assignment)
+  assignment$day <- 1:days
 
   # begin loop to populate the parameters of dtrapezoid to describe the curriculum
   # (the number of columns in start_point tells how many curricula there are (e.g., typical, remedial, advanced))

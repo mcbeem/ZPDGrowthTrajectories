@@ -40,7 +40,8 @@
 #' @param verbose shoud status updates be printed to the console? Defaults to TRUE.
 #' @export
 
-ZPDGrowthTrajectories_multicore <- function(n.cores, output.format="wide", days, assignment, curriculum.start.points, curriculum.widths, dosage, learning.rates, decay.rates,
+ZPDGrowthTrajectories_multicore <- function(n.cores, output.format="wide", days, assignment, curriculum.start.points, curriculum.widths, 
+                                             dosage, learning.rates, decay.rates,
                                              initial.achievements, home.environments, integration.points=200,
                                              curriculum.lower.slope=8, curriculum.upper.slope=300, alpha=1, home.curriculum.shape1=1,
                                              home.curriculum.shape2=4.6, zpd.offset=.022, zpd.sd=.042,
@@ -60,11 +61,11 @@ ZPDGrowthTrajectories_multicore <- function(n.cores, output.format="wide", days,
   
   if (n.cores > 1) {
     for (i in 1:(n.cores-1)) {
-      student.list[[i]] <- students[(ns*(i-1)+1):(ns*i),]
+      student.list[[i]] <- matrix(students[(ns*(i-1)+1):(ns*i),], ncol=4)
     }
   }
   
-  student.list[[n.cores]] <- students[(ns*(n.cores-1)+1):nrow(students),]
+  student.list[[n.cores]] <- matrix(students[(ns*(n.cores-1)+1):nrow(students),], ncol=4)
   
   ####  Begin multiprocessing ###
   
@@ -85,9 +86,14 @@ ZPDGrowthTrajectories_multicore <- function(n.cores, output.format="wide", days,
                                           zpd.scale=zpd.scale, decay.weight=decay.weight, 
                                           useGPU=useGPU, verbose=FALSE)
   
-  
   parallel::stopCluster(cl)
   
+  # re-number students
+  
+  for (i in 1:length(trajectories.list)) {
+    trajectories.list[[i]]$student <- trajectories.list[[i]]$student + 
+      (i-1)*max(trajectories.list[[i]]$student)
+  }
   
   # recombine list results into a matrix
   trajectories <- do.call(rbind, trajectories.list)

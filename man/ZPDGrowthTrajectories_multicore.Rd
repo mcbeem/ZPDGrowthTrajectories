@@ -14,7 +14,7 @@ ZPDGrowthTrajectories_multicore(n.cores, output.format = "wide", days,
   verbose = TRUE)
 }
 \arguments{
-\item{n.cores}{The number of CPUs to use. The number available can be seen by running \code{detectCores()}.}
+\item{n.cores}{The number of CPUs to use. The number available can be seen by running \code{parallel::detectCores()}.}
 
 \item{output.format}{Format of the results, "long" for long format, "wide" for wide. Defaults to "wide".}
 

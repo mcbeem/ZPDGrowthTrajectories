@@ -20,12 +20,13 @@
 #' @param zpd.scale scaling factor for the ZPD function, controls overall learning rate.
 #' @param useGPU should the code be executed on the GPU? May offer performance boost on large simulations. The \code{gpuR}
 #' package must be installed.
+#' @param verbose shoud status updates be printed to the console? defaults to TRUE.
 #' @export
 
 
 growTrajectories <- function(days, points, learn.rate, decay.rate, initial.ach, home.env, dose, decay.weight,
                              school.curr.fcn.values.by.day, home.curr.fcn.values, zpd.offset, zpd.sd, zpd.scale, #zpd.percentile, zpd.df
-                             useGPU=FALSE) {
+                             useGPU=FALSE, verbose=TRUE) {
 
   if (!requireNamespace("gpuR", quietly=TRUE)) {
     message("Package gpuR must be installed for useGPU=TRUE, setting useGPU to FALSE and continuing...\n")
@@ -122,7 +123,9 @@ growTrajectories <- function(days, points, learn.rate, decay.rate, initial.ach, 
         achievement[,t] <- (achievement[,t-1] + (dose*school_learn) + ((1-dose)*home_learn)) * (1 - (decay.rate*decay.weight))}
 
     # print a progress message to the console every 100 time points
+  if (verbose==TRUE) {
     if (t %% 100 == 0) {message(paste("Finished computing ", t, " time points.", sep=""))}
+    }
   }
 
   if (useGPU==TRUE) {

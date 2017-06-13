@@ -24,6 +24,7 @@
 #' @export
 
 
+
 growTrajectories <- function(days, points, learn.rate, decay.rate, initial.ach, home.env, dose, decay.weight,
                              school.curr.fcn.values.by.day, home.curr.fcn.values, zpd.offset, zpd.sd, zpd.scale, #zpd.percentile, zpd.df
                              useGPU=FALSE, verbose=TRUE) {

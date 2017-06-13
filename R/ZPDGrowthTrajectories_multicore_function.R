@@ -40,6 +40,7 @@
 #' @param verbose shoud status updates be printed to the console? Defaults to TRUE.
 #' @export
 
+
 ZPDGrowthTrajectories_multicore <- function(n.cores, output.format="wide", days, assignment, curriculum.start.points, curriculum.widths, 
                                              dosage, learning.rates, decay.rates,
                                              initial.achievements, home.environments, integration.points=200,

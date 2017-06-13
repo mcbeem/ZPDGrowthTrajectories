@@ -1,7 +1,12 @@
 #' Function for creating simulated growth trajectories from the theoretical model.
 #'
-#' description.
+#' \code{ZPDGrowthTrajectories} creates synthetic academic achievement growth trajectories.
 #'
+#' This function creates synthetic achievement growth trajectories from a quantitative intepretation
+#' of Vygotsky theory based on an upcoming publication by McBee, McCoach, and Makel. The user describes
+#' the student characteristics (learning rate, decay rate, initial achievement, and home environment) as
+#' well as the home 'curriculum' and the school curriculum. The function will then create a simulated
+#' growth trajectory for each student. 
 #'
 #' @param output.format Format of the results, "long" for long format, "wide" for wide. Defaults to "wide".
 #' @param days the number of days to simulate.
@@ -36,6 +41,7 @@
 #' @param decay.weight scalar parameter, global control of decay rates.
 #' @param useGPU should the code be executed on the GPU? May offer performance boost on large simulations. The \code{gpuR}
 #' package must be installed. Defaults to FALSE.
+#' @param verbose shoud status updates be printed to the console? Defaults to TRUE.
 #' @export
 
 
@@ -43,11 +49,13 @@ ZPDGrowthTrajectories <- function(output.format="wide", days, assignment, curric
                                   initial.achievements, home.environments, integration.points=200,
                                   curriculum.lower.slope=8, curriculum.upper.slope=300, alpha=1, home.curriculum.shape1=1,
                                   home.curriculum.shape2=4.6, zpd.offset=.022, zpd.sd=.042,
-                                  zpd.scale=.055, decay.weight=.005, useGPU=FALSE) {
+                                  zpd.scale=.055, decay.weight=.005, useGPU=FALSE, verbose=TRUE) {
 
 
-  start.time <- Sys.time()
-  message(paste("\nExecution began at ", start.time, sep=''))
+  if (verbose==TRUE) {
+    start.time <- Sys.time()
+    message(paste("\nExecution began at ", start.time, sep=''))
+    }
 
   # first call the two functions needed to create the school curriculum
 
@@ -69,8 +77,11 @@ ZPDGrowthTrajectories <- function(output.format="wide", days, assignment, curric
   home.curr.fcn.values <- buildHomeCurriculum(points=integration.points, shape1=home.curriculum.shape1,
                                               shape2=home.curriculum.shape2)
 
-  message("\nSetup complete.")
-  message("\nBeginning growth trajectory simulation...\n")
+  if (verbose==TRUE) {
+    message("\nSetup complete.")
+    message("\nBeginning growth trajectory simulation...\n")
+  }
+  
   # then grow the trajectories
 
   trajectories <- growTrajectories(days=days, points=integration.points, learn.rate=learning.rates, decay.rate=decay.rates,
@@ -78,7 +89,7 @@ ZPDGrowthTrajectories <- function(output.format="wide", days, assignment, curric
                                    school.curr.fcn.values.by.day=school.curr.fcn.values.by.day,
                                    home.curr.fcn.values=home.curr.fcn.values,
                                    zpd.offset=zpd.offset, zpd.sd=zpd.sd, zpd.scale=zpd.scale,
-                                   useGPU=useGPU)
+                                   useGPU=useGPU, verbose=verbose)
 
   n <- length(learning.rates)
   trajectories <- data.frame(trajectories)
@@ -86,7 +97,7 @@ ZPDGrowthTrajectories <- function(output.format="wide", days, assignment, curric
   names(trajectories) <- c("student", paste("day", seq(1:days), sep=""))
 
   if (output.format=="long") {
-    message("\nRestructuring output from wide to long.")
+    if (verbose==TRUE) {message("\nRestructuring output from wide to long.")}
 
     trajectories <- reshape2::melt(trajectories, measure.vars=c(1:days+1))
     trajectories[,2] <- rep(seq(1:days), each=length(learning.rates))
@@ -94,14 +105,15 @@ ZPDGrowthTrajectories <- function(output.format="wide", days, assignment, curric
     trajectories <- trajectories[order(trajectories$student),]
   }
 
-  end.time <- Sys.time()
+   if (verbose==TRUE) {
+    end.time <- Sys.time()
+    message(paste("\nExecution finished at ", end.time, sep=''))
+    elapsed.time <- end.time-start.time
+    time.unit <- units(elapsed.time)
 
-  message(paste("\nExecution finished at ", end.time, sep=''))
-  elapsed.time <- end.time-start.time
-  time.unit <- units(elapsed.time)
-
-  message(paste("\nThe simulation required ", round((end.time-start.time)[[1]],2), " ", time.unit, ".", sep=''))
-
+    message(paste("\nThe simulation required ", round((end.time-start.time)[[1]],2), " ", time.unit, ".", sep=''))
+  }
+  
   return(trajectories)
 
 }

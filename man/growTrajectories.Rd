@@ -6,7 +6,7 @@
 \usage{
 growTrajectories(days, points, learn.rate, decay.rate, initial.ach, home.env,
   dose, decay.weight, school.curr.fcn.values.by.day, home.curr.fcn.values,
-  zpd.offset, zpd.sd, zpd.scale, useGPU = FALSE)
+  zpd.offset, zpd.sd, zpd.scale, useGPU = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{days}{the number of days to simulate.}
@@ -38,6 +38,8 @@ relative to the current achievement.}
 
 \item{useGPU}{should the code be executed on the GPU? May offer performance boost on large simulations. The \code{gpuR}
 package must be installed.}
+
+\item{verbose}{shoud status updates be printed to the console? defaults to TRUE.}
 }
 \description{
 \code{growTrajectories} calculates achievement at each day.

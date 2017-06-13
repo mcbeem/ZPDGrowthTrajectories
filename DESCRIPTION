@@ -12,6 +12,7 @@ LazyData: true
 Imports:
     trapezoid,
     reshape2,
+    parallel,
 Suggests:
   gpuR,
 RoxygenNote: 6.0.1.9000

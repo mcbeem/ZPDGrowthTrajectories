@@ -3,7 +3,7 @@
 #' This function runs the \code{ZPDGrowthTrajectories} function on multiple CPUs simultaneously
 #' to speed up execution. 
 #'
-#' @param n.cores The number of CPUs to use. The number available can be seen by running \code{detectCores()}.
+#' @param n.cores The number of CPUs to use. The number available can be seen by running \code{parallel::detectCores()}.
 #' @param output.format Format of the results, "long" for long format, "wide" for wide. Defaults to "wide".
 #' @param days the number of days to simulate.
 #' @param assignment a vector. The length is the number of days to simulate. Each entry contains a number representing which

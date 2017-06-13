@@ -28,7 +28,7 @@ growTrajectories <- function(days, points, learn.rate, decay.rate, initial.ach, 
                              school.curr.fcn.values.by.day, home.curr.fcn.values, zpd.offset, zpd.sd, zpd.scale, #zpd.percentile, zpd.df
                              useGPU=FALSE, verbose=TRUE) {
 
-  if (!requireNamespace("gpuR", quietly=TRUE)) {
+  if ((!requireNamespace("gpuR" & useGPU==TRUE), quietly=TRUE)) {
     message("Package gpuR must be installed for useGPU=TRUE, setting useGPU to FALSE and continuing...\n")
     useGPU=FALSE
   }

@@ -29,8 +29,7 @@ visualize <- function(trajectories) {
   p <- ggplot2::ggplot(data=trajectories, ggplot2::aes(x=day, y=achievement, color=factor(student)))+
     ggplot2::geom_line(show.legend=FALSE, size=.5, alpha=.5) + #ylim(0,1)+
     ggplot2::geom_hline(yintercept=0, col="gray")+ggplot2::geom_vline(xintercept=0, col="gray")+
-    ggplot2::theme(text=ggplot2::element_text(family="Times New Roman", size=12),
-          panel.background=ggplot2::element_blank(), panel.grid.major=ggplot2::element_blank(), 
+    ggplot2::theme(panel.background=ggplot2::element_blank(), panel.grid.major=ggplot2::element_blank(), 
           panel.grid.minor=ggplot2::element_blank())
   
   return(p)

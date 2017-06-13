@@ -43,30 +43,40 @@ buildSchoolCurriculum <- function(start_point, width, assignment, points, n1, n3
 
   # begin loop to populate the parameters of dtrapezoid to describe the curriculum
   # (the number of columns in start_point tells how many curricula there are (e.g., typical, remedial, advanced))
-  for (i in 1:num.curricula) {
+  
+  if (school.years > 0) {  # only do this if there's at least one school year
+  
+    for (i in 1:num.curricula) {
+  
+      curr.parms[[i]] <- matrix(c(
+        #order: index min mode1 mode2 max n1 n3 alpha
+  
+        seq(1:school.years),                 # index parameter
+        rep(0, times=school.years),          # min parameter
+        start_point[,i],                    # mode1 parameter; where curriculum starts; comes from start_point
+        start_point[,i]+width[,i],         # mode2 parameter; where curriculum ends; comes from start_point plus width
+        rep(1, times=school.years),          # max parameter
+        rep(n1, times=school.years),          # n1 parameter
+        rep(n3, times=school.years),        # n3 parameter
+        rep(alpha, times=school.years)),          # alpha parameter
+        nrow=school.years, ncol=8, byrow=FALSE)
+  
+      # append row for summer with index=0
+  
+      curr.parms[[i]] <- rbind(curr.parms[[i]], c(0, -2, min(start_point[,i])-2, min(start_point[,i])-1,
+                                                  -1, n1, n3, alpha))
+    
+      # convert to to data frames and give names
+      curr.parms[[i]] <- data.frame(curr.parms[[i]])
+      names(curr.parms[[i]]) <- c("index", "min", "mode1", "mode2", "max", "n1", "n3", "alpha")
 
-    curr.parms[[i]] <- matrix(c(
-      #order: index min mode1 mode2 max n1 n3 alpha
-
-      seq(1:school.years),                 # index parameter
-      rep(0, times=school.years),          # min parameter
-      start_point[,i],                    # mode1 parameter; where curriculum starts; comes from start_point
-      start_point[,i]+width[,i],         # mode2 parameter; where curriculum ends; comes from start_point plus width
-      rep(1, times=school.years),          # max parameter
-      rep(n1, times=school.years),          # n1 parameter
-      rep(n3, times=school.years),        # n3 parameter
-      rep(alpha, times=school.years)),          # alpha parameter
-      nrow=school.years, ncol=8, byrow=FALSE)
-
-    # append row for summer with index=0
-
-    curr.parms[[i]] <- rbind(curr.parms[[i]], c(0, -2, min(start_point[,i])-2, min(start_point[,i])-1,
-                                                -1, n1, n3, alpha))
-
+    }
+  } else {
+    curr.parms[[1]] <- matrix(c(0, -2, min(start_point[,1])-2, min(start_point[,1])-1,
+                                            -1, n1, n3, alpha), nrow=1)
     # convert to to data frames and give names
-    curr.parms[[i]] <- data.frame(curr.parms[[i]])
-    names(curr.parms[[i]]) <- c("index", "min", "mode1", "mode2", "max", "n1", "n3", "alpha")
-
+    curr.parms[[1]] <- data.frame(curr.parms[[1]])
+    names(curr.parms[[1]]) <- c("index", "min", "mode1", "mode2", "max", "n1", "n3", "alpha")
   }
 
   x <- seq(0, 1, length.out=points)

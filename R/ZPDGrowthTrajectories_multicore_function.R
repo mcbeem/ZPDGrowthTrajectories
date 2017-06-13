@@ -75,7 +75,7 @@ ZPDGrowthTrajectories_multicore <- function(n.cores, output.format="wide", days,
   
   trajectories.list <- parallel::parLapply(cl=cl, X=student.list, 
                                           fun=ZPDGrowthTrajectories::ZPDGrowthTrajectories_studentmatrix, 
-                                          output.format="long", days=days, assignment=assignment, 
+                                          output.format=output.format, days=days, assignment=assignment, 
                                           curriculum.start.points=curriculum.start.points,
                                           curriculum.widths=curriculum.widths,
                                           dosage=dosage, integration.points=integration.points,

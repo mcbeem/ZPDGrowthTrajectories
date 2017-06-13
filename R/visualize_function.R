@@ -26,10 +26,10 @@ visualize <- function(trajectories) {
     trajectories <- trajectories[order(trajectories$student),]
   }
   
-  p <- ggplot2::ggplot(data=trajectories, aes(x=day, y=achievement, color=factor(student)))+
-    geom_line(show.legend=FALSE, size=.5, alpha=.5) + #ylim(0,1)+
-    geom_hline(yintercept=0, col="gray")+geom_vline(xintercept=0, col="gray")+
-    theme(text=element_text(family="Times New Roman", size=12),
+  p <- ggplot2::ggplot(data=trajectories, ggplot2::aes(x=day, y=achievement, color=factor(student)))+
+    ggplot2::geom_line(show.legend=FALSE, size=.5, alpha=.5) + #ylim(0,1)+
+    ggplot2::geom_hline(yintercept=0, col="gray")+ggplot2::geom_vline(xintercept=0, col="gray")+
+    ggplot2::theme(text=element_text(family="Times New Roman", size=12),
           panel.background=element_blank(), panel.grid.major=element_blank(), 
           panel.grid.minor=element_blank())
   

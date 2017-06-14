@@ -16,7 +16,7 @@ This vignette illustrates how to use the package.
 The package is available on the lead author's github site. To install the package, you will first need to download the ```devtools``` package. You will also need the ```knitr``` and ```rmarkdown``` packages in order to build the vignette. 
 
 ```{r, eval=FALSE}
-install.packages("devtools")
+install.packages(c("devtools", "knitr", "rmarkdown"))
 ```
 
 After installing ```devtools```, you can use the ```install_github()``` function to install the package.
@@ -53,7 +53,9 @@ This theoretical model represents academic achievement as a student's position a
 
 The achievement growth rate (or learning) during a period *t* depends on how well the student's ZPD aligns with the instruction to which they are exposed. Suboptimal growth occurs when the curriculum is above the bulk of the student's ZPD ("too hard") or below it ("too easy"). 
 
-# Using the function
+The core dynamic of the this theoretical model is the the student's **achievement growth rate is proportional to the overlap between their ZPD and the instruction to which they are exposed, both in school and at home. 
+
+# Using the Function
 
 Using the function involves specifying the following information:
 
@@ -61,7 +63,7 @@ Using the function involves specifying the following information:
 
 * Parameters controlling the **zone of proximal development**. These control the width and location of each student's zone of proximal development relative to their current achievement level.
 
-* **School curriculum**: for each grade level that the student will encounter, the achievement level of the content to be presented must be described. This includes the lower and upper values of achievement for which the curriculum reaches maximal intensity as well as parameters describing how rapidly the curricular content falls both below the lower bound (e.g., review of content from prior grades) and above the upper bound (e.g., above grade-level content). 
+* **School curriculum**: for each grade level that the student will encounter, the achievement level of the content to be presented must be described. This includes the lower and upper values of achievement for which the curriculum reaches maximal intensity as well as parameters describing how rapidly the intensity of the curricular content falls both below the lower bound (e.g., review of content from prior grades) and above the upper bound (e.g., above grade-level content). 
 
 * **Home curriculum**: students learn outside of school. The home curriculum function describes the intensity of home instruction at different levels of achievement. This is typically a decaying function, as children typically experience much more intense instruction in early childhood content at home (e.g., colors, animal sounds, learning letters and numbers) than in advanced content (e.g, pythagorean theorem, mitochondria, properties of gerunds). 
 
@@ -75,19 +77,19 @@ The following code demonstrates how characteristics for four simulated students 
 # generate data for four students
 
 # learning rate
-learning <- c(.08, .10, .12, .18)
+learning.rates <- c(.08, .10, .12, .18)
 
 # decay rate
-forgetting <- c(.04, .03, .02, .01)
+decay.rates <- c(.04, .03, .02, .01)
 
 # initial achievement
-initial <- rep(0, times=4)
+initial.achievements <- rep(0, times=4)
 
 # quality of home environment
-home <- c(.08, .13, .18, .23)
+home.environments <- c(.08, .13, .18, .23)
 ```
 
-Each student has a unique position in the student characteristics vectors. For example, student #1's values are found in the first position of each of these vectors. His learning rate is `r learning[1]`, decay rate is `r forgetting[1]`, initial achievement is `r initial[1]`, and home environment is `r home[1]`.
+Each student has a unique position in the student characteristics vectors. For example, student #1's values are found in the first position of each of these vectors. His learning rate is `r learning.rates[1]`, decay rate is `r decay.rates[1]`, initial achievement is `r initial.achievements[1]`, and home environment is `r home.environments[1]`.
 
 ## The Zone of Proximal Development (ZPD)
 
@@ -124,9 +126,7 @@ The theoretical model considers two sources of instruction: what is learned at h
 
 ## School Curriculum
 
-. The academic content ("curriculum") for each grade is co-located on the same scale as academic achievement.
-
-The core dynamic of the this theoretical model is the the student's **achievement growth rate is proportional to the overlap between their ZPD and the instruction to which they are exposed, both in school and at home. 
+The academic content ("curriculum") for each grade is co-located on the same scale as academic achievement.
 
 ### Visualizing the School Curriculum Function
 
@@ -137,38 +137,44 @@ Note that these object *must* be explicitly created as matrices using the ```mat
 For this example, there is only one version of each of the two grade level curricula. Therefore this matrix has dimensions $2 \times 1$. 
 
 ```{r}
-curriculum_lower <- matrix(c(.12, .20), nrow=2, ncol=1)
+curriculum.start.points <- matrix(c(.12, .20), nrow=2, ncol=1)
 ```
 
 Thus, the kindergarten curriculum reaches full intensity at the achievement level of 0.12, while the first grade curriculum reaches full intensity at the achievement level of 0.20. 
 
-Now the functioning of the ```assignment``` object should be more clear. Non-zero values in the ```assignment``` vector refer to rows in the ```curriculum_lower``` object created above. For example, on days 801 through 1,000, students are exposed to the school curriculum described in row 1 of this curriculum matrix (hence the value of "1" in the assignment matrix for these days). On days 1,101 through 1,300, the value of "2" in the assignment matrix refers to the 2nd row of ```curriculum_lower```.
+Now the functioning of the ```assignment``` object should be more clear. Non-zero values in the ```assignment``` vector refer to rows in the ```curriculum.start.points``` object created above. For example, on days 801 through 1,000, students are exposed to the school curriculum described in row 1 of this curriculum matrix (hence the value of "1" in the assignment matrix for these days). On days 1,101 through 1,300, the value of "2" in the assignment matrix refers to the 2nd row of ```curriculum.start.points```.
 
-The curriculum width describes
+The curriculum width describes the *span* of the curriculum. The full itensity of the school curriculum is located at the starting point plus the width. So the Kindergarten curriculum here begins at the achievement level of $0.12$ and ends at $0.12 + .08 = 0.20$. The first grade curriculum begins at $.20$ and ends at $.28$. 
 
 ```{r}
-curriculum_width <- matrix(c(.08, .08), nrow=2, ncol=1)
+curriculum.widths <- matrix(c(.08, .08), nrow=2, ncol=1)
 ```
 
 ### Visualizing the School Curriculum
 
-The ```ZPDGrowthTrajectories``` package uses the generalized trapezoidal distribution to model the school curriculum. The shape of this distribution is governed by 
+The ```ZPDGrowthTrajectories``` package uses the generalized trapezoidal distribution to model the school curriculum. The shape of this distribution is governed by five parameters, allowing the user to specify flexible shapes. The trapezoidal distribution function is ```trapezoid::dtrapezoid()```. The ```curriculum.start.points=``` and ```curriculum.widths=``` arguments have already been discussed. 
+
+The ```curriculum.lower.slope=``` and ```curriculum.upper.slope=``` arguments describe how rapidly the curricular intensity fades for achievement levels below the lower bound of full intensity (e.g., review) and above the upper bound (e.g., advanced content). In general, values between 1-10 decribe slow fadeout while values in the hundreds specify quick fadeout.
+
+The ```alpha=``` argument describes the shape of the peak intensity. The default setting of ```alpha=1``` means that the curricular intensity is constant ("flat") between the lower and upper bounds.
+
+**The best way to develop an intuition about these values is the experiment with the code for plotting the school curriculum function.**
 
 ```{r}
-
 curriculum.start.points <- matrix(c(.2), nrow=1, ncol=1)
 curriculum.widths <- matrix(c(.1), nrow=1, ncol=1)
 curriculum.lower.slope <- 8
 curriculum.upper.slope <- 300
+alpha <- 1
 
 
 x <- seq(0, 1, by=.01)
 y <- trapezoid::dtrapezoid(x, 
-                           n1=curriculum.lower.slope, 
-                           n3=curriculum.upper.slope, 
-                           mode1=curriculum.start.points[1,1],
-                           mode2=curriculum.start.points[1,1]+curriculum.widths[1,1], 
-                           alpha=1)
+       n1=curriculum.lower.slope, 
+       n3=curriculum.upper.slope, 
+       mode1=curriculum.start.points[1,1],
+       mode2=curriculum.start.points[1,1]+curriculum.widths[1,1], 
+       alpha=alpha)
 
 plot(x, y/max(y), type="l", xlab="achievement", ylab="intensity")
 
@@ -176,20 +182,50 @@ plot(x, y/max(y), type="l", xlab="achievement", ylab="intensity")
 
 ## Home Curriculum
 
-With these parameters set, the ```ZPDGrowthTraejectories()``` function can be used.
+The home curriculum describes learning outside of school. Based on a beta distribution, the default values for the ```home.curriculum.shape1=``` and ```home.curriculum.shape2=``` arguments (which are the ```shape1``` and ```shape2``` argument to ```dbeta()```) desribe the following shape to the home curriculum.
+
+```{r}
+home.curriculum.shape1 <- 1
+home.curriculum.shape2 <- 5
+
+x <- seq(0, 1, by=.01)
+y <- dbeta(x, shape1=home.curriculum.shape1, shape2=home.curriculum.shape2) 
+
+plot(x, y/max(y), type="l", xlab="achievement", ylab="intensity")
+
+```
+
+
+With these parameters set, the ```ZPDGrowthTraejectories()``` function can be used to generate synthetic growth trajectories for the four students.
 
 ```{r}
 
-trajectories <- ZPDGrowthTrajectories(output.format="wide", days=1300, assignment=assignment,
-                                      curriculum.start.points=curriculum_lower,
-                                      curriculum.widths=curriculum_width,
-                                      dosage=.8, learning.rates=learning, decay.rates=forgetting,
-                                      initial.achievements=initial, home.environments=home,
-                                      integration.points=200, curriculum.lower.slope=8,
-                                      curriculum.upper.slope=300, alpha=1, home.curriculum.shape1=1,
-                                      home.curriculum.shape2=5, zpd.offset=.03, zpd.sd=.028,
-                                      zpd.scale=.15, decay.weight=.005, useGPU=FALSE, verbose=FALSE)
+trajectories <- ZPDGrowthTrajectories(
+  output.format="wide", 
+  days=1300, 
+  assignment=assignment,
+  curriculum.start.points=curriculum.start.points, 
+  curriculum.widths=curriculum.widths, 
+  dosage=.8, 
+  learning.rates=learning.rates, 
+  decay.rates=decay.rates, 
+  initial.achievements=initial.achievements, 
+  home.environments=home.environments, 
+  integration.points=200, 
+  curriculum.lower.slope=8,
+  curriculum.upper.slope=300, 
+  alpha=1, 
+  home.curriculum.shape1=1,
+  home.curriculum.shape2=5, 
+  zpd.offset=.03, 
+  zpd.sd=.028,
+  zpd.scale=.15, 
+  decay.weight=.005, 
+  useGPU=FALSE, 
+  verbose=TRUE)
 ```
+
+The first few rows of the ```trajectories``` object can be examined using the ```head()``` function.
 
 ```{r}
 head(trajectories)[1:6]
@@ -213,17 +249,32 @@ figure + ggplot2::geom_vline(xintercept=c(800, 1000, 1100, 1300), alpha=.5)
 And here's the same situation computed with the ```multicore``` version of the function. Note the ```n.cores=4``` argument. 
 
 ```{r}
-trajectories.mc <- ZPDGrowthTrajectories_multicore(n.cores=4, output.format="wide", days=1300,
-assignment=assignment,
-curriculum.start.points=curriculum_lower,
-curriculum.widths=curriculum_width,
-dosage=.8, learning.rates=learning, decay.rates=forgetting,
-initial.achievements=initial, home.environments=home,
-integration.points=200, curriculum.lower.slope=8,
-curriculum.upper.slope=300, alpha=1, home.curriculum.shape1=1,
-home.curriculum.shape2=5, zpd.offset=.03, zpd.sd=.028,
-zpd.scale=.15, decay.weight=.005, useGPU=FALSE, verbose=FALSE)
+trajectories.mc <- ZPDGrowthTrajectories_multicore(
+  n.cores=4, 
+  output.format="wide", 
+  days=1300, 
+  assignment=assignment,                                           
+  curriculum.start.points=curriculum.start.points,
+  curriculum.widths=curriculum.widths,
+  dosage=.8, 
+  learning.rates=learning.rates, 
+  decay.rates=decay.rates,
+  initial.achievements=initial.achievements,
+  home.environments=home.environments,
+  integration.points=200, 
+  curriculum.lower.slope=8,
+  curriculum.upper.slope=300, 
+  alpha=1, 
+  home.curriculum.shape1=1,
+  home.curriculum.shape2=5, 
+  zpd.offset=.03, 
+  zpd.sd=.028,
+  zpd.scale=.15, 
+  decay.weight=.005, 
+  useGPU=FALSE, 
+  verbose=FALSE)
 ```
+
 
 
 The output of the single core and multicore versions of the ```ZPDGrowthTrajectories``` functions are identical.
@@ -236,32 +287,55 @@ head(trajectories.mc)[1:6]
 visualize(trajectories.mc)
 ```
 
-# Explaination of the arguments to ```ZPDGrowthTrajectories()```
-
-* ```n.cores```
-* ```output.format```
-* ```days```
-* ```assignment```
-* ```curriculum.start.points```
-* ```curriculum.widths```
-* ```dosage```
-* ```learning.rates```
-* ```decay.rates```
-* ```initial.achievements``` 
-* ```home.environments```
-* ```integration.points```
-* ```curriculum.lower.slope```
-* ```curriculum.upper.slope```
-* ```alpha```
-* ```home.curriculum.shape1```
-* ```home.curriculum.shape2```
-* ```zpd.offset```
-* ```zpd.sd```
-* ```zpd.scale```
-* ```decay.weight```
-* ```useGPU```
-* ```verbose```
 
 # Example
 
-## 
+## Growth rate depends on current achievement
+
+Three students will be created that are identical in every way except for their initial achievement. 
+
+```{r}
+## *** set child characteristics *** ##
+# learning rate
+learning <- rep(.2, times=3)
+initial <- c(.1, .2, .3)
+home <- rep(0, times=3)
+decay <- rep(0, times=3)
+
+
+## *** set school curriculum characteristics *** ##
+# assignment vector
+assignment <- c(rep(0, 50), rep(1, 100), rep(0, 50))
+# school curriculum
+sch.curr.starts <- matrix(.2, nrow=1, ncol=1)
+sch.curr.width <- matrix(.1, nrow=1, ncol=1)
+
+## *** build the trajectories *** ##
+trajectories <- ZPDGrowthTrajectories(output.format="wide", days=200, assignment=assignment,
+                                      curriculum.start.points=sch.curr.starts,
+                                      curriculum.widths=sch.curr.width,
+                                      dosage=.8, learning.rates=learning, decay.rates=decay,
+                                      initial.achievements=initial, home.environments=home,
+                                      integration.points=200, curriculum.lower.slope=8,
+                                      curriculum.upper.slope=300, alpha=1, home.curriculum.shape1=1,
+                                      home.curriculum.shape2=5, zpd.offset=.03, zpd.sd=.028,
+                                      zpd.scale=.15, decay.weight=.005, useGPU=FALSE, verbose=TRUE)
+
+## *** visualize them *** ##
+visualize(trajectories)
+```
+
+The synthetic growth trajectories generated by the ```ZPDGrowthTrajectories()``` function have many potential uses. For example, the amount of learning (change in academic achievement) for the three simulated students can be calculated using the following code. These types of computations are facilitated by setting ```output.format="wide"```. 
+
+```{r}
+# learning (change in achievement) for the three children:
+trajectories$day200 - trajectories$day1
+```
+
+It is also possible to fit statistcal models to the synthetic data. This is useful for atttempting to reproduce empirical results from synthetic data. The process is as follows:
+
+1. Produce synthetic data.
+2. Rescale achievement to the desired metric. 
+3. Add measurement error.
+4. Extract samples ("slices") from the synthetic data at desired time points. 
+5. Fit statistical models.

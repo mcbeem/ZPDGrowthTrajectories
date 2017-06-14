@@ -16,4 +16,7 @@ Imports:
     ggplot2,
 Suggests:
   gpuR,
+  knitr,
+  rmarkdown,
+VignetteBuilder: knitr
 RoxygenNote: 6.0.1.9000

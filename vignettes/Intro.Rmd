@@ -1,7 +1,5 @@
 ---
-title: "ZPDGrowthTrajectories introduction"
-author: "Matthew T. McBee"
-date: "`r Sys.Date()`"
+title: "Introduction to ```ZPDGrowthTrajectories```"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Intro}
@@ -15,7 +13,7 @@ This vignette illustrates how to use the package.
 
 # Installing the package
 
-The package is available on the lead author's github site. To install the package, you will first need to download the ```devtools``` package.
+The package is available on the lead author's github site. To install the package, you will first need to download the ```devtools``` package. You will also need the ```knitr``` and ```rmarkdown``` packages in order to build the vignette. 
 
 ```{r, eval=FALSE}
 install.packages("devtools")
@@ -263,3 +261,7 @@ visualize(trajectories.mc)
 * ```decay.weight```
 * ```useGPU```
 * ```verbose```
+
+# Example
+
+## 

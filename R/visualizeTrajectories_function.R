@@ -2,15 +2,15 @@
 #'
 #' Function for visualizing synthethic growth trajectories.
 #'#' 
-#' \code{visualize} plots synthetic growth trajectories using \code{ggplot2}. 
+#' \code{visualizeTrajectories} plots synthetic growth trajectories using \code{ggplot2}. 
 #'
-#' @param trajectories A data frame produced by the \code{ZPDGrowthTrajectories}, 
-#' \code{ZPDGrowthTrajectories_studentmatrix}, or \code{ZPDGrowthTrajectories_multicore} functions.
+#' @param trajectories A data frame produced by the \code{ZPDGrowthTrajectories()}, 
+#' \code{ZPDGrowthTrajectories_studentmatrix()}, or \code{ZPDGrowthTrajectories_multicore()} functions.
 #' Will be converted internally to "long" format suitable for \code{ggplot}. The function returns a 
 #' \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
 #' @export
 
-visualize <- function(trajectories) {
+visualizeTrajectories <- function(trajectories) {
   
   # check to see if the trajectories are in long or wide format
   # if long, it will have 3 columns
@@ -27,7 +27,7 @@ visualize <- function(trajectories) {
   }
   
   p <- ggplot2::ggplot(data=trajectories, ggplot2::aes(x=day, y=achievement, color=factor(student)))+
-    ggplot2::geom_line(show.legend=FALSE, size=.5, alpha=.5) + #ylim(0,1)+
+    ggplot2::geom_line(show.legend=FALSE, size=.5, alpha=.5) +
     ggplot2::geom_hline(yintercept=0, col="gray")+ggplot2::geom_vline(xintercept=0, col="gray")+
     ggplot2::theme(panel.background=ggplot2::element_blank(), panel.grid.major=ggplot2::element_blank(), 
           panel.grid.minor=ggplot2::element_blank())

@@ -1,12 +1,12 @@
 Package: ZPDGrowthTrajectories
 Title: Simulates achievement growth trajectories using a theoretical model of academic achievement
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: person("Matthew", "McBee", email = "mmcbee@gmail.com", role = c("aut", "cre"))
 Description: This packages creates simulated longitudinal academic achievement trajectories 
     based on Vygotsky's Zone of Proximal Development (ZPD) as described in a forthcoming
     publication by McBee, McCoach, and Makel. 
 Depends: R (>= 3.3.1)
-License: CC-BY 4.0
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:
@@ -14,9 +14,9 @@ Imports:
     reshape2,
     parallel,
     ggplot2,
+    knitr,
+    rmarkdown,
 Suggests:
   gpuR,
-  knitr,
-  rmarkdown,
-VignetteBuilder: knitr
+VignetteBuilder: knitr, rmarkdown
 RoxygenNote: 6.0.1.9000

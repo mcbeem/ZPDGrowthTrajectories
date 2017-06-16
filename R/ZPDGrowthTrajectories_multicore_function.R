@@ -91,13 +91,17 @@ ZPDGrowthTrajectories_multicore <- function(n.cores, output.format="wide", days,
   
   # re-number students
   
-  for (i in 1:length(trajectories.list)) {
-    trajectories.list[[i]]$student <- trajectories.list[[i]]$student + 
-      (i-1)*max(trajectories.list[[i]]$student)
-  }
+   for (i in 1:length(trajectories.list)) {
+     trajectories.list[[i]]$student <- trajectories.list[[i]]$student + 
+       (i-1)*max(trajectories.list[[i]]$student)
+   }
   
   # recombine list results into a matrix
-  trajectories <- do.call(rbind, trajectories.list)
+  trajectories <- as.data.frame(data.table::rbindlist(trajectories.list, use.names=TRUE))
+
+  # clean-up and garbage collection for memory management
+  rm(trajectories.list)
+  gc()
   
   if (verbose==TRUE) {
     end.time <- Sys.time()

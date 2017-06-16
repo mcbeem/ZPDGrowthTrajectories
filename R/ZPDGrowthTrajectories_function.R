@@ -103,6 +103,7 @@ ZPDGrowthTrajectories <- function(output.format="wide", days, assignment, curric
     trajectories[,2] <- rep(seq(1:days), each=length(learning.rates))
     names(trajectories) <- c("student", "day", "achievement")
     trajectories <- trajectories[order(trajectories$student),]
+   
   }
 
    if (verbose==TRUE) {

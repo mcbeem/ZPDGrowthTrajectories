@@ -15,7 +15,8 @@ Imports:
     parallel,
     ggplot2,
     knitr,
-    rmarkdown,
+    rmarkdown,	
+    data.table,
 Suggests:
   gpuR,
 VignetteBuilder: knitr, rmarkdown

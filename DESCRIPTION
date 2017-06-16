@@ -1,6 +1,6 @@
 Package: ZPDGrowthTrajectories
 Title: Simulates achievement growth trajectories using a theoretical model of academic achievement
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: person("Matthew", "McBee", email = "mmcbee@gmail.com", role = c("aut", "cre"))
 Description: This packages creates simulated longitudinal academic achievement trajectories 
     based on Vygotsky's Zone of Proximal Development (ZPD) as described in a forthcoming

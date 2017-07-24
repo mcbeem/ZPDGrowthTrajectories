@@ -31,7 +31,7 @@ visualizeZPD <- function(achievement=.3, zpd.sd, zpd.offset) {
   p <- ggplot2::ggplot(data=data, ggplot2::aes(x=x, y=y))+ggplot2::geom_line(alpha=.5)+ 
     ggplot2::geom_polygon(data=shade, ggplot2::aes(x,y), fill="blue", alpha=.1)+
     ggplot2::geom_vline(xintercept=achievement, col="darkblue", cex=.75, alpha=.8)+
-    ggplot2::theme_classic()+ggplot2::ylab("achievement")+ggplot2::xlab("intensity")
+    ggplot2::theme_classic()+ggplot2::xlab("achievement")+ggplot2::ylab("intensity")
     
   return(p)
 }

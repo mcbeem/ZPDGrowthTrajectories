@@ -1,5 +1,5 @@
 Package: ZPDGrowthTrajectories
-Title: Simulates achievement growth trajectories using a theoretical model of academic achievement
+Title: Simulate achievement growth trajectories using a theoretical model of academic achievement based on the zone of proximal development (ZPD)
 Version: 0.0.5
 Authors@R: person("Matthew", "McBee", email = "mmcbee@gmail.com", role = c("aut", "cre"))
 Description: This packages creates simulated longitudinal academic achievement trajectories 
@@ -8,6 +8,7 @@ Description: This packages creates simulated longitudinal academic achievement t
 Depends: R (>= 3.3.1)
 License: GPL-3
 Encoding: UTF-8
+Date: 2017-09-21
 LazyData: true
 Imports:
     trapezoid,

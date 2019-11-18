@@ -34,7 +34,7 @@ buildSchoolCurriculum <- function(start_point, width, assignment, points, n1, n3
   # the number of school years is the highest value assignment vector
   school.years <- max(assignment)
   num.curricula <- ncol(start_point)
-  
+
   # convert the assignment object to a data frame
   days <- length(assignment)
   assignment <- data.frame(matrix(assignment, nrow=length(assignment)))
@@ -43,14 +43,14 @@ buildSchoolCurriculum <- function(start_point, width, assignment, points, n1, n3
 
   # begin loop to populate the parameters of dtrapezoid to describe the curriculum
   # (the number of columns in start_point tells how many curricula there are (e.g., typical, remedial, advanced))
-  
+
   if (school.years > 0) {  # only do this if there's at least one school year
-  
+
     for (i in 1:num.curricula) {
-  
+
       curr.parms[[i]] <- matrix(c(
         #order: index min mode1 mode2 max n1 n3 alpha
-  
+
         seq(1:school.years),                 # index parameter
         rep(0, times=school.years),          # min parameter
         start_point[,i],                    # mode1 parameter; where curriculum starts; comes from start_point
@@ -60,12 +60,12 @@ buildSchoolCurriculum <- function(start_point, width, assignment, points, n1, n3
         rep(n3, times=school.years),        # n3 parameter
         rep(alpha, times=school.years)),          # alpha parameter
         nrow=school.years, ncol=8, byrow=FALSE)
-  
+
       # append row for summer with index=0
-  
+
       curr.parms[[i]] <- rbind(curr.parms[[i]], c(0, -2, min(start_point[,i])-2, min(start_point[,i])-1,
                                                   -1, n1, n3, alpha))
-    
+
       # convert to to data frames and give names
       curr.parms[[i]] <- data.frame(curr.parms[[i]])
       names(curr.parms[[i]]) <- c("index", "min", "mode1", "mode2", "max", "n1", "n3", "alpha")

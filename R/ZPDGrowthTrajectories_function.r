@@ -80,7 +80,7 @@
 #' # students 1 and 2 get typical curriculum, 3 and 4 get advanced
 #' which.curriculum <- c(1,1,2,2)
 #'
-#' y1 <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
+#' y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
 #'                            decay.rate=decay.rate, initial.ach=initial.ach,
 #'                            school.weight=1, home.weight=1, decay.weight=.25,
 #'                            dosage=.8, assignment=assignment,
@@ -91,6 +91,8 @@
 #'                            curriculum.start.points=curriculum.start.points,
 #'                            curriculum.widths=curriculum.widths,
 #'                            verbose=T, output.format="long")
+#'
+#' visualizeTrajectories(y)
 
 ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
                                   school.weight, home.weight, decay.weight, dosage,

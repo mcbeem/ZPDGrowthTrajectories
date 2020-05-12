@@ -48,7 +48,7 @@ all learn.rate values}
 \item{dosage}{scalar dose parameter, controls mixing of school curriculum and home curriculum during school years.
 Must be [0,1].}
 
-\item{assignment}{a vector. The length is the number of days to simulate. Each entry contains a number representing which
+\item{assignment}{a vector. The length is the number of time intervals to simulate. Each entry contains a number representing which
 grade-level curriculum to present. Zero denotes summers. The numbers correspond to the row index of the
  \code{curriculum.start.points} and \code{curriculum.widths} objects.}
 
@@ -109,7 +109,7 @@ initial.ach <- rep(0, times=4)
 # quality of home environment
 home.env <- c(.06, .12, .15, .20)
 
-# assignment object simulating starting kindergarten on day 801
+# assignment object simulating starting kindergarten on time 801
 #  Kindergarten for 200 days, followed by 100 days of summer
 #  then 200 days of first grade
 assignment <- c(rep(0, times=800), rep(1, times=200),
@@ -145,5 +145,6 @@ y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
                            curriculum.widths=curriculum.widths,
                            verbose=TRUE, output.format="long")
 
+describeTrajectories(y, assignment=assignment, byCurriculum=FALSE)
 visualizeTrajectories(y)
 }

@@ -18,7 +18,7 @@
 #' @param decay.weight a global scalar for adjusting the rate of forgetting; prevents having to adjust all decay.rate values
 #' @param dosage scalar dose parameter, controls mixing of school curriculum and home curriculum during school years.
 #'   Must be [0,1].
-#' @param assignment a vector. The length is the number of days to simulate. Each entry contains a number representing which
+#' @param assignment a vector. The length is the number of time intervals to simulate. Each entry contains a number representing which
 #'   grade-level curriculum to present. Zero denotes summers. The numbers correspond to the row index of the
 #'    \code{curriculum.start.points} and \code{curriculum.widths} objects.
 #' @param adaptive.curriculum logical; if there are multiple versions of the school curriculum for each time period,
@@ -61,7 +61,7 @@
 #' # quality of home environment
 #' home.env <- c(.06, .12, .15, .20)
 #'
-#' # assignment object simulating starting kindergarten on day 801
+#' # assignment object simulating starting kindergarten on time 801
 #' #  Kindergarten for 200 days, followed by 100 days of summer
 #' #  then 200 days of first grade
 #' assignment <- c(rep(0, times=800), rep(1, times=200),
@@ -97,6 +97,7 @@
 #'                            curriculum.widths=curriculum.widths,
 #'                            verbose=TRUE, output.format="long")
 #'
+#' describeTrajectories(y, assignment=assignment, byCurriculum=FALSE)
 #' visualizeTrajectories(y)
 
 ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
@@ -142,8 +143,8 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
       max(c(length(learn.rate), length(home.env), length(decay.rate), length(initial.ach)))) {
     stop("The length of learn.rate, home.env, decay.rate, and initial.ach must be identical")}
 
-  # the number of days is the length of the assignent vector
-  days <- length(assignment)
+  # the number of time intervals is the length of the assignent vector
+  times <- length(assignment)
 
 
   students <- students.to.list(learn.rate=learn.rate, home.env=home.env, decay.rate=decay.rate,
@@ -254,12 +255,12 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
 
 
 
-  # call the grow.trajectories function to loop over days
+  # call the grow.trajectories function to loop over time intervals
   achievement <- list()
 
   for (i in 1:max(which.curriculum)) {
     achievement[[i]] <-  cbind(students[[i]],
-                               grow.trajectories(students=students[[i]], days=days, which.curriculum=i,
+                               grow.trajectories(students=students[[i]], times=times, which.curriculum=i,
                                                  assignment=assignment, school.weight=school.weight, home.weight=home.weight,
                                                  decay.weight=decay.weight, dosage=dosage,
                                                  school.lookup.table=school.lookup.table, home.lookup.table=home.lookup.table)
@@ -276,20 +277,18 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
   # append student id as the first column
   achievement <- cbind(seq(1:length(learn.rate)), achievement)
 
-  # append
-
   # name the columns
   names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
-                          "curriculum", paste("day", seq(1:days), sep=""))
+                          "curriculum", paste("time", seq(1:times), sep=""))
 
   if (output.format=="long") {
 
     if (verbose==TRUE) {message("Restructuring output from wide to long.")}
 
     achievement <- reshape2::melt(achievement, id.vars=1:6)
-    achievement[,7] <- rep(seq(1:days), each=length(learn.rate))
+    achievement[,7] <- rep(seq(1:times), each=length(learn.rate))
     names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
-                            "curriculum", "day", "achievement")
+                            "curriculum", "time", "achievement")
     achievement <- achievement[order(achievement$id),]
 
     achievement$assignment <- rep(assignment, times=length(learn.rate))
@@ -315,6 +314,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
     message(paste0("\nExecution required ", round((end.time-start.time)[[1]],2), " ", time.unit, "."))
   }
 
+  class(achievement) = c("ZPD", "data.frame")
   return(achievement)
 
 }

@@ -1,7 +1,7 @@
 #' Function for looping over all the time periods to calculate achievement trajectories
 #' called by ZPDGrowthTrajectories()
 #'
-#' @param days how many time intervals to compute; the first n values of the assignment vector
+#' @param times how many time intervals to compute; the first n values of the assignment vector
 #' @param assignment vector indicating which school curriculum will be presented during each time period,
 #'  where the numbers refer to columns of the curriculum.start.points matrix and zeros represent times
 #'  of no school instruction (e.g., summmer)
@@ -39,13 +39,13 @@
 #'                    .001, .002, .0015,
 #'                    rep(.15, 3)), ncol=4)
 #'
-#' grow.trajectories(days=10, students=students, which.curriculum=1,
+#' grow.trajectories(times=10, students=students, which.curriculum=1,
 #'                   assignment=rep(1, 10), decay.weight=.25, school.weight=1, home.weight=1,
 #'                   dosage=.8, school.lookup.table=list(school.lookup.table),
 #'                   home.lookup.table=home.lookup.table)
 #' }
 
-grow.trajectories <- function(days, assignment, students, which.curriculum,
+grow.trajectories <- function(times, assignment, students, which.curriculum,
                               decay.weight, school.weight, home.weight,
                               dosage, school.lookup.table, home.lookup.table) {
 
@@ -54,10 +54,10 @@ grow.trajectories <- function(days, assignment, students, which.curriculum,
   # create achievement matrix, populated initially with NAs
 
   achievement <- matrix(
-    c(students[,4], rep(NA, nstudents*(days-1))),
-    nrow=nstudents, ncol=days, byrow=F)
+    c(students[,4], rep(NA, nstudents*(times-1))),
+    nrow=nstudents, ncol=times, byrow=F)
 
-  for (t in 2:days) {
+  for (t in 2:times) {
 
     achievement[,t] <-  update.achievement(learn.rate=students[,1], home.env=students[,2],
                                            decay.rate=students[,3],

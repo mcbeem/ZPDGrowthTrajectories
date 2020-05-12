@@ -6,7 +6,7 @@
 called by ZPDGrowthTrajectories()}
 \usage{
 grow.trajectories(
-  days,
+  times,
   assignment,
   students,
   which.curriculum,
@@ -19,7 +19,7 @@ grow.trajectories(
 )
 }
 \arguments{
-\item{days}{how many time intervals to compute; the first n values of the assignment vector}
+\item{times}{how many time intervals to compute; the first n values of the assignment vector}
 
 \item{assignment}{vector indicating which school curriculum will be presented during each time period,
 where the numbers refer to columns of the curriculum.start.points matrix and zeros represent times
@@ -69,7 +69,7 @@ students <- matrix(c(.05, .04, .03,
                    .001, .002, .0015,
                    rep(.15, 3)), ncol=4)
 
-grow.trajectories(days=10, students=students, which.curriculum=1,
+grow.trajectories(times=10, students=students, which.curriculum=1,
                   assignment=rep(1, 10), decay.weight=.25, school.weight=1, home.weight=1,
                   dosage=.8, school.lookup.table=list(school.lookup.table),
                   home.lookup.table=home.lookup.table)

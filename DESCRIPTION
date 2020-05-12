@@ -15,7 +15,8 @@ Imports:
   stats,
   pracma,
   reshape2,
-  ggplot2
+  ggplot2,
+  dplyr
 Suggests: 
   knitr,
   rmarkdown

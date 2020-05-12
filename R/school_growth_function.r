@@ -9,10 +9,13 @@
 #' @param start the curriculum starting location
 #' @param end the curriculum ending location
 #' @examples
-#' school.growth(x=.25, achievement=.22, ZPD.offset=0, ZPD.width=.03, slope1=30, slope2=30, start=.2, end=.25)
+#' \dontrun{
+#' school.growth(x=.25, achievement=.22, ZPD.offset=0, ZPD.width=.03, slope1=30,
+#' slope2=30, start=.2, end=.25)
+#' }
 #'
 
 school.growth <- function(x, achievement, ZPD.offset, ZPD.width, slope1, slope2, start, end) {
-  ZPD(x=x, location=achievement+ZPD.offset, radius=ZPD.width) * school(x, slope1=slope1,
-                                                                       slope2=slope2, start=start, end=end)
+ ZPD(x=x, location=achievement+ZPD.offset, radius=ZPD.width) *
+    school(x, slope1=slope1, slope2=slope2, start=start, end=end)
 }

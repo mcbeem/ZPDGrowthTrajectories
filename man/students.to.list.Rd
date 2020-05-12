@@ -21,10 +21,10 @@ students.to.list(
 
 \item{decay.rate}{vector of decay rates, one for each student}
 
+\item{initial.ach}{vector of achievement values, one for each student}
+
 \item{which.curriculum}{a vector of values indicating which version of the school curriculum should be presented
 during interval t. The numbers index list elements of the curriculum.start.points and curriculum.widths objects}
-
-\item{achievement}{vector of achievement values, one for each student}
 }
 \description{
 Function for converting the student characteristics into a list in which the
@@ -32,6 +32,7 @@ Function for converting the student characteristics into a list in which the
  called by ZPDGrowthTrajectories() function
 }
 \examples{
+\dontrun{
 # learning rate
 learn.rate <- c(.08, .10, .12, .18)
 
@@ -44,6 +45,9 @@ initial.ach <- rep(0, times=4)
 # quality of home environment
 home.env <- c(.06, .12, .15, .20)
 
-students.to.list(learn.rate=learn.rate, home.env=home.env, decay.rate=decay.rate, initial.ach=initial.ach,
-                   which.curriculum=c(rep(1, times=length(learn.rate)/2), rep(2, times=length(learn.rate)/2)))
+students.to.list(learn.rate=learn.rate, home.env=home.env, decay.rate=decay.rate,
+                initial.ach=initial.ach,
+                which.curriculum=c(rep(1, times=length(learn.rate)/2),
+                rep(2, times=length(learn.rate)/2)))
+}
 }

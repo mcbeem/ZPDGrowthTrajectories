@@ -42,7 +42,9 @@ Function for calculating growth resulting from school at every possible achievem
 Called by build.school.lookup()
 }
 \examples{
+\dontrun{
 school.growth.rate(achievement=seq(0,1, .1), integration.points=200, ZPD.offset=.05,
   ZPD.width=.04, slope1=10, slope2=20, start=.1, end=.2)
+  }
 
 }

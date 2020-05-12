@@ -6,9 +6,10 @@
 #' @param location location of the ZPD
 #' @param radius radius of the ZPD
 #' @examples
-#' x <- seq(-1, 1, length.out=5000)
-#' y <- ZPD(x, radius=.1, location=.2)
-#' plot(x,y, type="l", xlim=c(0,1))
+#' \dontrun{
+#' ZPD(x=.37, radius=.05, location=.4)
+#' }
+
 
 # function defining the ZPD as an Epanechnikov function
 

@@ -12,9 +12,13 @@
 #' @param end the curriculum ending location
 #' @param integration.points integration points for numerical integration
 #'
+#' @importFrom pracma trapz
+#'
 #' @examples
+#' \dontrun{
 #' school.growth.rate(achievement=seq(0,1, .1), integration.points=200, ZPD.offset=.05,
 #'   ZPD.width=.04, slope1=10, slope2=20, start=.1, end=.2)
+#'   }
 #'
 school.growth.rate <- function(achievement, ZPD.offset, ZPD.width, slope1, slope2,
                                start, end, integration.points) {
@@ -39,8 +43,8 @@ school.growth.rate <- function(achievement, ZPD.offset, ZPD.width, slope1, slope
   # numerically evaluate the integral
   return(pracma::trapz(x=integration.pts,
                        school.growth(x=integration.pts, achievement=achievement, ZPD.offset=ZPD.offset,
-                                     ZPD.width=ZPD.width, start=start, end=end, slope1=slope1,
-                                     slope2=slope2)))
+                                     ZPD.width=ZPD.width, start=start, end=end,
+                                     slope1=slope1, slope2=slope2)))
 }
 
 # Vectorize the function over the achievement argument

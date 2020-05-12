@@ -11,7 +11,11 @@
 #' @param rate exponential decay rate for the home curriculum function
 #' @param threshold the threshold growth rate for finding the effective maximum possible achievement
 #' @param integration.points integration points for numerical integration
+#'
+#' @importFrom stats uniroot
+#'
 #' @examples
+#' \dontrun{
 #' curriculum.start.points <- matrix(c(.1, .2, .3), ncol=1)
 #' curriculum.widths <- matrx(rep(.11, 3), ncol=1)
 #'
@@ -20,6 +24,7 @@
 #'                 curriculum.widths=curriculum.widths,
 #'                 slope2=10, rate=6, threshold=.00001,
 #'                 integration.points=2000)
+#' }
 
 max.achievement <- function(ZPD.width, ZPD.offset,
                             curriculum.start.points, curriculum.widths,
@@ -37,7 +42,7 @@ max.achievement <- function(ZPD.width, ZPD.offset,
   #  becomes zero because the home curriculum function (exponential decay)
   #  has an asymptote at zero
 
-  home.max <- uniroot(function(achievement){
+  home.max <- stats::uniroot(function(achievement){
     home.growth.rate(achievement=achievement, rate=rate, ZPD.offset=ZPD.offset,
                      ZPD.width=ZPD.width, integration.points=integration.points)-
       threshold}, interval=c(0, 1e100))$root

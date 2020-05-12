@@ -19,23 +19,30 @@
 #' @param which.curriculum a vector of values indicating which version of the school curriculum should be presented
 #'  during interval t. The numbers index list elements of the curriculum.start.points and curriculum.widths objects
 #'
+#' @importFrom stats approx
+#'
 #' @examples
+#' \dontrun{
 #' curriculum.start.points <- matrix(c(.1, .2, .3), ncol=1)
 #'
 #' curriculum.widths <- matrx(rep(.11, 3), ncol=1)
 #'
-#' school.lookup.table <- build.school.lookup(integration.points=2000, ZPD.width=.05, ZPD.offset=.02,
+#' school.lookup.table <- build.school.lookup(integration.points=2000, ZPD.width=.05,
+#'                                            ZPD.offset=.02,
 #'                                            curriculum.start.points=curriculum.start.points,
 #'                                            curriculum.widths=curriculum.widths,
 #'                                            slope1=10, slope2=30, maxachievement=1.5)
 #'
-#' home.lookup.table <- build.home.lookup(integration.points=2000, ZPD.width=.05, ZPD.offset=.02, rate=4, maxachievement=1.5)
+#' home.lookup.table <- build.home.lookup(integration.points=2000, ZPD.width=.05, ZPD.offset=.02,
+#'                                        rate=4, maxachievement=1.5)
 #'
-#' update.achievement(learn.rate=c(.05, .04, .03), home.env=c(.15, .2, .08), decay.rate=c(.001, .002, .0015),
+#' update.achievement(learn.rate=c(.05, .04, .03), home.env=c(.15, .2, .08),
+#'                    decay.rate=c(.001, .002, .0015),
 #'                    achievement=rep(.15, 3), which.curriculum=1,
 #'                    assignment=1, decay.weight=.25, school.weight=1, home.weight=1,
 #'                    dosage=.8, school.lookup.table=list(school.lookup.table),
 #'                    home.lookup.table=home.lookup.table)
+#' }
 
 update.achievement <- function(learn.rate, home.env, decay.rate, achievement,
                                assignment, dosage, school.weight, home.weight,
@@ -46,13 +53,13 @@ update.achievement <- function(learn.rate, home.env, decay.rate, achievement,
 
   # calculate vector of baseline school growth across all students
   if (assignment==0) {growth.school <- 0} else {
-    growth.school <- approx(x=school.lookup.table[[which.curriculum]][,1],
+    growth.school <- stats::approx(x=school.lookup.table[[which.curriculum]][,1],
                             y=school.lookup.table[[which.curriculum]][, assignment+1],
                             xout=achievement, rule=2)$y
   }
 
   # calculate vector of baseline home growth across all students
-  growth.home <- approx(x=home.lookup.table[,1],
+  growth.home <- stats::approx(x=home.lookup.table[,1],
                         y=home.lookup.table[,2],
                         xout=achievement, rule=2)$y
 

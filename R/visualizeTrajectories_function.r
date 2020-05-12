@@ -20,13 +20,13 @@ visualizeTrajectories <- function(trajectories) {
     days <- ncol(trajectories)-6
 
     trajectories <- reshape2::melt(trajectories, id.vars=1:6)
-    trajectories[,7] <- rep(seq(1:days), each=length(learn.rate))
+    trajectories[,7] <- rep(seq(1:days), each=nstudents)
     names(trajectories) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
                             "curriculum", "day", "achievement")
     trajectories <- trajectories[order(trajectories$id),]
   }
 
-  p <- ggplot2::ggplot(data=trajectories, ggplot2::aes(x=day, y=achievement, color=factor(id)))+
+  p <- ggplot2::ggplot(data=trajectories, ggplot2::aes(x=trajectories$day, y=trajectories$achievement, color=factor(trajectories$id)))+
     ggplot2::geom_line(show.legend=FALSE, size=.5, alpha=.5) +
     ggplot2::geom_hline(yintercept=0, col="gray")+ggplot2::geom_vline(xintercept=0, col="gray")+
     ggplot2::theme(panel.background=ggplot2::element_blank(), panel.grid.major=ggplot2::element_blank(),

@@ -21,40 +21,45 @@
 #' @param assignment a vector. The length is the number of days to simulate. Each entry contains a number representing which
 #'   grade-level curriculum to present. Zero denotes summers. The numbers correspond to the row index of the
 #'    \code{curriculum.start.points} and \code{curriculum.widths} objects.
-#' @param days the number of days to simulate.
-#' @param adaptive.curriculum. logical; if there are multiple versions of the school curriculum for each time period,
+#' @param adaptive.curriculum logical; if there are multiple versions of the school curriculum for each time period,
 #'   should they be assigned adaptively? TRUE means that the version that would produce the optimal achievement in
 #'   each time period is presented. FALSE means that the curriculum assignment is based on which.curriculum.
 #'   Defaults to FALSE
 #' @param which.curriculum Defaults to NULL
 #' @param integration.points Integer number of integration points. Controls tradeoff between accuracy and execution speed.
-#'   Defaults to 200.
+#'   Defaults to 250.
+#' @param threshold Used for determining the maximum achievement to be populated in the lookup tables, specified
+#'   as a growth rate. Defaults to .00001
 #' @param slope1 The steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.
 #' @param slope2 The slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.
 #' @param rate Scalar, the exponential decay parameter describing the home curriculum function.
-#' @param zpd.offset scalar value, measured on the same scale as achievement, describing where the ZPD peaks
+#' @param ZPD.offset scalar value, measured on the same scale as achievement, describing where the ZPD peaks
 #'   relative to the current achievement.
 #' @param curriculum.start.points a matrix or list of matrices providing the start points of each grade level (rows) and version (columns) of the
 #'   school curriculum.
 #' @param curriculum.widths a matrix or list of matrices providing the spans of each grade level (rows) and version (columns) of the
 #'   school curriculum.
-#' @param zpd.width the radius of the ZPD.
+#' @param ZPD.width the radius of the ZPD.
 #' @param verbose logical, should status updates be printed to the console? Defaults to TRUE.
 #' @param output.format Format of the results, "long" for long format, "wide" for wide. Defaults to "long".
+#'
+#' @importFrom reshape2 melt
+#' @importFrom stats approx
+#'
 #' @export
 
 #' @examples
 #' # learning rate
-#' learning.rates <- c(.08, .10, .12, .18)
+#' learn.rate <- c(.08, .10, .12, .18)
 #'
 #' # decay rate
-#' decay.rates <- c(.04, .03, .02, .01)
+#' decay.rate <- c(.04, .03, .02, .01)
 #'
 #' # initial achievement
-#' initial.achievements <- rep(0, times=4)
+#' initial.ach <- rep(0, times=4)
 #'
 #' # quality of home environment
-#' home.environments <- c(.06, .12, .15, .20)
+#' home.env <- c(.06, .12, .15, .20)
 #'
 #' # assignment object simulating starting kindergarten on day 801
 #' #  Kindergarten for 200 days, followed by 100 days of summer
@@ -82,15 +87,15 @@
 #'
 #' y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
 #'                            decay.rate=decay.rate, initial.ach=initial.ach,
-#'                            school.weight=1, home.weight=1, decay.weight=.25,
+#'                            school.weight=.5, home.weight=1, decay.weight=.05,
 #'                            dosage=.8, assignment=assignment,
 #'                            which.curriculum=which.curriculum,
-#'                            adaptive.curriculum=F,
-#'                            slope1=8, slope2=15, rate=6,
+#'                            adaptive.curriculum=FALSE,
+#'                            slope1=10, slope2=20, rate=6,
 #'                            ZPD.width=.05, ZPD.offset=.02,
 #'                            curriculum.start.points=curriculum.start.points,
 #'                            curriculum.widths=curriculum.widths,
-#'                            verbose=T, output.format="long")
+#'                            verbose=TRUE, output.format="long")
 #'
 #' visualizeTrajectories(y)
 
@@ -187,7 +192,8 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
                                     integration.points=integration.points)
 
   for (i in 1:length(curriculum.start.points)) {
-    school.lookup.table[[i]] <- build.school.lookup(integration.points=integration.points, ZPD.width=ZPD.width,
+    school.lookup.table[[i]] <- build.school.lookup(integration.points=integration.points,
+                                                    ZPD.width=ZPD.width,
                                                     ZPD.offset=ZPD.offset,
                                                     curriculum.start.points=curriculum.start.points[[i]],
                                                     curriculum.widths=curriculum.widths[[i]],
@@ -235,8 +241,9 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
   }
 
   # Build the home lookup table
-  home.lookup.table <- build.home.lookup(integration.points=integration.points, ZPD.width=ZPD.width, ZPD.offset=ZPD.offset,
-                                         rate=rate, maxachievement=maxachievement)
+  home.lookup.table <- build.home.lookup(integration.points=integration.points,
+                                                                ZPD.width=ZPD.width, ZPD.offset=ZPD.offset,
+                                                                rate=rate, maxachievement=maxachievement)
 
 
   if (verbose==TRUE) {
@@ -289,7 +296,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
 
     if (adaptive.curriculum==TRUE) {
       for (i in 1:max(assignment)) {
-        achievement$curriculum[achievement$assignment==i] <- round(approx(x=which.school.lookup[,1], y=which.school.lookup[,1+i],
+        achievement$curriculum[achievement$assignment==i] <- round(stats::approx(x=which.school.lookup[,1], y=which.school.lookup[,1+i],
                                                                           xout=achievement$achievement[achievement$assignment==i])$y, 0)
       }
 

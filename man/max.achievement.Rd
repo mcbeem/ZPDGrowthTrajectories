@@ -42,6 +42,7 @@ falls below some negligible threshold
 called by ZPDGrowthTrajectories() function
 }
 \examples{
+\dontrun{
 curriculum.start.points <- matrix(c(.1, .2, .3), ncol=1)
 curriculum.widths <- matrx(rep(.11, 3), ncol=1)
 
@@ -50,4 +51,5 @@ max.achievement(ZPD.width=.05, ZPD.offset=.02,
                 curriculum.widths=curriculum.widths,
                 slope2=10, rate=6, threshold=.00001,
                 integration.points=2000)
+}
 }

@@ -23,5 +23,7 @@ Function for calculating the growth during interval t from exposure to home
 called by home.growth.rate() function
 }
 \examples{
+\dontrun{
 home.growth(x=.2, achievement=.2, ZPD.offset=0, ZPD.width=.1, rate=5)
+}
 }

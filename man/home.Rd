@@ -21,6 +21,8 @@ called by home.growth() function
 Home curriculum intensity given by (-rate*x)
 }
 \examples{
+\dontrun{
 x <- seq(.0001, 1, .001)
 plot(x, y=home(x, rate=5), "l")
+}
 }

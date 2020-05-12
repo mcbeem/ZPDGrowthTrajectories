@@ -7,7 +7,10 @@
 #' @param rate exponential decay rate for the home curriculum function
 #' @param maxachievement the maximum achieveable level of achievement
 #' @examples
-#' build.home.lookup(integration.points=20, ZPD.width=.05, ZPD.offset=.02, rate=4, maxachievement=1.5)
+#'\dontrun{
+#' build.home.lookup(integration.points=20, ZPD.width=.05, ZPD.offset=.02,
+#'                  rate=4, maxachievement=1.5)
+#' }
 
 build.home.lookup <- function(integration.points, ZPD.width, ZPD.offset,
                               rate, maxachievement) {
@@ -15,8 +18,9 @@ build.home.lookup <- function(integration.points, ZPD.width, ZPD.offset,
   achievement <- seq(.0001, maxachievement, length.out=integration.points)
 
   home.lookup <- cbind(achievement,
-                       home.growth.rate(achievement=achievement, integration.points=integration.points,
-                                        ZPD.offset=ZPD.offset, ZPD.width=ZPD.width, rate))
+                       home.growth.rate(achievement=achievement,
+                                       integration.points=integration.points,
+                                       ZPD.offset=ZPD.offset, ZPD.width=ZPD.width, rate))
 
   return(home.lookup)
 }

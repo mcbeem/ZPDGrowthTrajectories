@@ -27,5 +27,8 @@ Function for calculating growth resulting from home experience at every possible
 Called by build.home.lookup()
 }
 \examples{
-home.growth.rate(achievement=seq(0,1, .1), integration.points=200, ZPD.offset=0, ZPD.width=.04, rate=5)
+\dontrun{
+home.growth.rate(achievement=seq(0,1, .1), integration.points=200, ZPD.offset=0,
+                 ZPD.width=.04, rate=5)
+}
 }

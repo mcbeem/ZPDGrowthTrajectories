@@ -9,8 +9,12 @@
 #' @param ZPD.width the radius of the student's ZPD
 #' @param rate exponential decay rate for the home curriculum function
 #' @param integration.points integration points for numerical integration
+#' @importFrom pracma trapz
 #' @examples
-#' home.growth.rate(achievement=seq(0,1, .1), integration.points=200, ZPD.offset=0, ZPD.width=.04, rate=5)
+#' \dontrun{
+#' home.growth.rate(achievement=seq(0,1, .1), integration.points=200, ZPD.offset=0,
+#'                  ZPD.width=.04, rate=5)
+#' }
 
 home.growth.rate <- function(achievement, ZPD.offset, ZPD.width, rate, integration.points) {
   # this function uses the trapezoidal area function from pracma
@@ -30,8 +34,8 @@ home.growth.rate <- function(achievement, ZPD.offset, ZPD.width, rate, integrati
                          length.out=integration.points)
   # evaluate
   return(pracma::trapz(x=integration.pts,
-                       home.growth(x=integration.pts, achievement=achievement, ZPD.offset=ZPD.offset,
-                                   ZPD.width=ZPD.width, rate=rate)))
+                       home.growth(x=integration.pts, achievement=achievement,
+                                   ZPD.offset=ZPD.offset, ZPD.width=ZPD.width, rate=rate)))
 }
 
 # Vectorize the function over the achievement argument

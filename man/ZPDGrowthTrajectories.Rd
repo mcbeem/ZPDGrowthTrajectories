@@ -52,7 +52,17 @@ Must be [0,1].}
 grade-level curriculum to present. Zero denotes summers. The numbers correspond to the row index of the
  \code{curriculum.start.points} and \code{curriculum.widths} objects.}
 
+\item{adaptive.curriculum}{logical; if there are multiple versions of the school curriculum for each time period,
+should they be assigned adaptively? TRUE means that the version that would produce the optimal achievement in
+each time period is presented. FALSE means that the curriculum assignment is based on which.curriculum.
+Defaults to FALSE}
+
 \item{which.curriculum}{Defaults to NULL}
+
+\item{ZPD.width}{the radius of the ZPD.}
+
+\item{ZPD.offset}{scalar value, measured on the same scale as achievement, describing where the ZPD peaks
+relative to the current achievement.}
 
 \item{curriculum.start.points}{a matrix or list of matrices providing the start points of each grade level (rows) and version (columns) of the
 school curriculum.}
@@ -67,23 +77,14 @@ school curriculum.}
 \item{rate}{Scalar, the exponential decay parameter describing the home curriculum function.}
 
 \item{integration.points}{Integer number of integration points. Controls tradeoff between accuracy and execution speed.
-Defaults to 200.}
+Defaults to 250.}
+
+\item{threshold}{Used for determining the maximum achievement to be populated in the lookup tables, specified
+as a growth rate. Defaults to .00001}
 
 \item{verbose}{logical, should status updates be printed to the console? Defaults to TRUE.}
 
 \item{output.format}{Format of the results, "long" for long format, "wide" for wide. Defaults to "long".}
-
-\item{days}{the number of days to simulate.}
-
-\item{adaptive.curriculum.}{logical; if there are multiple versions of the school curriculum for each time period,
-should they be assigned adaptively? TRUE means that the version that would produce the optimal achievement in
-each time period is presented. FALSE means that the curriculum assignment is based on which.curriculum.
-Defaults to FALSE}
-
-\item{zpd.offset}{scalar value, measured on the same scale as achievement, describing where the ZPD peaks
-relative to the current achievement.}
-
-\item{zpd.width}{the radius of the ZPD.}
 }
 \description{
 \code{ZPDGrowthTrajectories} creates synthetic academic achievement growth trajectories.
@@ -97,16 +98,16 @@ growth trajectory for each student.
 }
 \examples{
 # learning rate
-learning.rates <- c(.08, .10, .12, .18)
+learn.rate <- c(.08, .10, .12, .18)
 
 # decay rate
-decay.rates <- c(.04, .03, .02, .01)
+decay.rate <- c(.04, .03, .02, .01)
 
 # initial achievement
-initial.achievements <- rep(0, times=4)
+initial.ach <- rep(0, times=4)
 
 # quality of home environment
-home.environments <- c(.06, .12, .15, .20)
+home.env <- c(.06, .12, .15, .20)
 
 # assignment object simulating starting kindergarten on day 801
 #  Kindergarten for 200 days, followed by 100 days of summer
@@ -134,15 +135,15 @@ which.curriculum <- c(1,1,2,2)
 
 y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
                            decay.rate=decay.rate, initial.ach=initial.ach,
-                           school.weight=1, home.weight=1, decay.weight=.25,
+                           school.weight=.5, home.weight=1, decay.weight=.05,
                            dosage=.8, assignment=assignment,
                            which.curriculum=which.curriculum,
-                           adaptive.curriculum=F,
-                           slope1=8, slope2=15, rate=6,
+                           adaptive.curriculum=FALSE,
+                           slope1=10, slope2=20, rate=6,
                            ZPD.width=.05, ZPD.offset=.02,
                            curriculum.start.points=curriculum.start.points,
                            curriculum.widths=curriculum.widths,
-                           verbose=T, output.format="long")
+                           verbose=TRUE, output.format="long")
 
 visualizeTrajectories(y)
 }

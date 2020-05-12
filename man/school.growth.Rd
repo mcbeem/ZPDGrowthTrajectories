@@ -38,6 +38,9 @@ Function for calculating the baseline growth due to school exposure during inter
 called by school.growth()
 }
 \examples{
-school.growth(x=.25, achievement=.22, ZPD.offset=0, ZPD.width=.03, slope1=30, slope2=30, start=.2, end=.25)
+\dontrun{
+school.growth(x=.25, achievement=.22, ZPD.offset=0, ZPD.width=.03, slope1=30,
+slope2=30, start=.2, end=.25)
+}
 
 }

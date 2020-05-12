@@ -38,10 +38,12 @@ Function to build the school growth lookup table
 called by ZPDGrowthTrajectories() function
 }
 \examples{
+\dontrun{
 curriculum.start.points <- matrix(c(.1, .2, .3), ncol=1)
 curriculum.widths <- matrx(rep(.11, 3), ncol=1)
 build.school.lookup(integration.points=20, ZPD.width=.05, ZPD.offset=.02,
                       curriculum.start.points=curriculum.start.points,
                       curriculum.widths=curriculum.widths,
                       slope1=10, slope2=30, maxachievement=1.5)
+ }
 }

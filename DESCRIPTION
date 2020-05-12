@@ -12,9 +12,12 @@ Date: 2020-05-11
 LazyData: true
 URL: https://github.com/mcbeem/ZPDGrowthTrajectories
 Imports:
+  stats,
   pracma,
   reshape2,
   ggplot2
-Suggests:
+Suggests: 
+  knitr,
+  rmarkdown
 VignetteBuilder: knitr, rmarkdown
 RoxygenNote: 7.1.0

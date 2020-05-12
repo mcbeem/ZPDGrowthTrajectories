@@ -50,24 +50,28 @@ Function for looping over all the time periods to calculate achievement trajecto
 called by ZPDGrowthTrajectories()
 }
 \examples{
+\dontrun{
 curriculum.start.points <- matrix(c(.1, .2, .3), ncol=1)
 
 curriculum.widths <- matrx(rep(.11, 3), ncol=1)
 
-school.lookup.table <- build.school.lookup(integration.points=2000, ZPD.width=.05, ZPD.offset=.02,
+school.lookup.table <- build.school.lookup(integration.points=2000, ZPD.width=.05,
+                                           ZPD.offset=.02,
                                            curriculum.start.points=curriculum.start.points,
                                            curriculum.widths=curriculum.widths,
                                            slope1=10, slope2=30, maxachievement=1.5)
 
-home.lookup.table <- build.home.lookup(integration.points=2000, ZPD.width=.05, ZPD.offset=.02, rate=4, maxachievement=1.5)
+home.lookup.table <- build.home.lookup(integration.points=2000, ZPD.width=.05,
+                                       ZPD.offset=.02, rate=4, maxachievement=1.5)
 
 students <- matrix(c(.05, .04, .03,
-                     .15, .2, .08,
-                     .001, .002, .0015,
-                     rep(.15, 3)), ncol=4)
+                   .15, .2, .08,
+                   .001, .002, .0015,
+                   rep(.15, 3)), ncol=4)
 
 grow.trajectories(days=10, students=students, which.curriculum=1,
-                   assignment=rep(1, 10), decay.weight=.25, school.weight=1, home.weight=1,
-                   dosage=.8, school.lookup.table=list(school.lookup.table),
-                   home.lookup.table=home.lookup.table)
+                  assignment=rep(1, 10), decay.weight=.25, school.weight=1, home.weight=1,
+                  dosage=.8, school.lookup.table=list(school.lookup.table),
+                  home.lookup.table=home.lookup.table)
+}
 }

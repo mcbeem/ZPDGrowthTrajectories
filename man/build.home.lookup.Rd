@@ -29,5 +29,8 @@ Function to build the home growth lookup table
 called by ZPDGrowthTrajectories() function
 }
 \examples{
-build.home.lookup(integration.points=20, ZPD.width=.05, ZPD.offset=.02, rate=4, maxachievement=1.5)
+\dontrun{
+build.home.lookup(integration.points=20, ZPD.width=.05, ZPD.offset=.02,
+                 rate=4, maxachievement=1.5)
+}
 }

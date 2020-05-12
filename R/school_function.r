@@ -6,11 +6,14 @@
 #' @param start the curriculum starting location
 #' @param end the curriculum ending location
 #' @examples
+#' \dontrun{
 #' x <- seq(0, 1, .001)
 #' plot(x, school(x, slope1=10, slope2=30, start=.2, end=.4), "l")
 #' # mark start and end points
-#  abline(v=c(.2, .4), lty="dotted", col="red")
+#'  abline(v=c(.2, .4), lty="dotted", col="red")
+#' }
 #'
+
 school <- function(x, slope1, slope2, start, end) {
   slope2 <- -1*slope2
   # define piecewise function

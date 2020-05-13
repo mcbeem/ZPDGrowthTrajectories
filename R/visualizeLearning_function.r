@@ -54,13 +54,13 @@
 #'   matrix(c(.04, .04), nrow=2, ncol=1)
 #' )
 #'
-# visualizeLearning(curriculum.start.points=curriculum.start.points,
-#                   curriculum.widths=curriculum.widths,
-#                   assignment=assignment,
-#                   slope1=50, slope2=100, points=200, annotate=T,
-#                   versionlabels = c("Typical", "Advanced"),
-#                   linecolor="blue",
-#                   rate=6, zoomschool="truncate")
+#' visualizeLearning(curriculum.start.points=curriculum.start.points,
+#'                   curriculum.widths=curriculum.widths,
+#'                   assignment=assignment,
+#'                   slope1=50, slope2=100, points=200, annotate=T,
+#'                   versionlabels = c("Typical", "Advanced"),
+#'                   linecolor="blue",
+#'                   rate=6, zoomschool="truncate")
 #'
 #' @export
 

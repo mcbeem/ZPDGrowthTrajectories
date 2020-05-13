@@ -27,7 +27,7 @@ called by ZPDGrowthTrajectories() function}
 
 \item{curriculum.widths}{matrix of curriculum widths}
 
-\item{slope2}{the slope of the upper leg of the school curriculum}
+\item{slope2}{matrix of slopes of the upper leg of the school curriculum}
 
 \item{rate}{exponential decay rate for the home curriculum function}
 
@@ -44,12 +44,13 @@ called by ZPDGrowthTrajectories() function
 \examples{
 \dontrun{
 curriculum.start.points <- matrix(c(.1, .2, .3), ncol=1)
-curriculum.widths <- matrx(rep(.11, 3), ncol=1)
+curriculum.widths <- matrix(rep(.11, 3), ncol=1)
+slope2 <- matrix(rep(10, 3), ncol=1)
 
 max.achievement(ZPD.width=.05, ZPD.offset=.02,
                 curriculum.start.points=curriculum.start.points,
                 curriculum.widths=curriculum.widths,
-                slope2=10, rate=6, threshold=.00001,
+                slope2=slope2, rate=6, threshold=.00001,
                 integration.points=2000)
 }
 }

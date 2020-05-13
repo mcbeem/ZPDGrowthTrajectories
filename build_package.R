@@ -27,7 +27,7 @@ install("ZPDGrowthTrajectories")
 #usethis::use_testthat()
 
 
-library(ZPDGrowthTrajectories)
+#library(ZPDGrowthTrajectories)
 #?ZPDGrowthTrajectories
 #detach("package:ZPDGrowthTrajectories", unload=TRUE)
 

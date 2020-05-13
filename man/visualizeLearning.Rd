@@ -31,9 +31,9 @@ grade level (rows) and version (columns) of the school curriculum.}
 grade-level curriculum to present. Zero denotes summers. The numbers correspond to the row index of the
  \code{curriculum.start.points} and \code{curriculum.widths} objects.}
 
-\item{slope1}{The steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.}
+\item{slope1}{a matrix or list of matrices describing the steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.}
 
-\item{slope2}{The slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.}
+\item{slope2}{a matrix or list of matrices describing the slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.}
 
 \item{points}{Integer value desribing the number of points within the span of the curriculum
 for which the intensity is calculated. This controls the smoothness of the gradient of intensity
@@ -88,10 +88,24 @@ curriculum.widths <- list(
   matrix(c(.04, .04), nrow=2, ncol=1)
 )
 
+slope1 <- list(
+  # "typical curriculum" review slopes for K and first grade
+  matrix(c(15, 15), nrow=2, ncol=1),
+  # "advanced curriculum" review slopes for K and first grade
+  matrix(c(30, 30), nrow=2, ncol=1)
+  )
+
+slope2 <- list(
+  # "typical curriculum" advanced slopes for K and first grade
+  matrix(c(50, 50), nrow=2, ncol=1),
+  # "advanced curriculum" advanced slopes for K and first grade
+  matrix(c(25, 25), nrow=2, ncol=1)
+  )
+
 visualizeLearning(curriculum.start.points=curriculum.start.points,
                   curriculum.widths=curriculum.widths,
                   assignment=assignment,
-                  slope1=50, slope2=100, points=200, annotate=T,
+                  slope1=slope1, slope2=slope2, points=200, annotate=TRUE,
                   versionlabels = c("Typical", "Advanced"),
                   linecolor="blue",
                   rate=6, zoomschool="truncate")

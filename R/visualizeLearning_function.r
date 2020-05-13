@@ -7,8 +7,8 @@
 #' @param assignment a vector. The length is the number of time intervals to simulate. Each entry contains a number representing which
 #'   grade-level curriculum to present. Zero denotes summers. The numbers correspond to the row index of the
 #'    \code{curriculum.start.points} and \code{curriculum.widths} objects.
-#' @param slope1 The steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.
-#' @param slope2 The slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.
+#' @param slope1 a matrix or list of matrices describing the steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.
+#' @param slope2 a matrix or list of matrices describing the slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.
 #' @param points Integer value desribing the number of points within the span of the curriculum
 #'  for which the intensity is calculated. This controls the smoothness of the gradient of intensity
 #'  shading in the plot. Larger values yield better smoothness but require longer execution time.
@@ -54,10 +54,24 @@
 #'   matrix(c(.04, .04), nrow=2, ncol=1)
 #' )
 #'
+#' slope1 <- list(
+#'   # "typical curriculum" review slopes for K and first grade
+#'   matrix(c(15, 15), nrow=2, ncol=1),
+#'   # "advanced curriculum" review slopes for K and first grade
+#'   matrix(c(30, 30), nrow=2, ncol=1)
+#'   )
+#'
+#' slope2 <- list(
+#'   # "typical curriculum" advanced slopes for K and first grade
+#'   matrix(c(50, 50), nrow=2, ncol=1),
+#'   # "advanced curriculum" advanced slopes for K and first grade
+#'   matrix(c(25, 25), nrow=2, ncol=1)
+#'   )
+#'
 #' visualizeLearning(curriculum.start.points=curriculum.start.points,
 #'                   curriculum.widths=curriculum.widths,
 #'                   assignment=assignment,
-#'                   slope1=50, slope2=100, points=200, annotate=T,
+#'                   slope1=slope1, slope2=slope2, points=200, annotate=TRUE,
 #'                   versionlabels = c("Typical", "Advanced"),
 #'                   linecolor="blue",
 #'                   rate=6, zoomschool="truncate")
@@ -70,17 +84,33 @@ visualizeLearning <- function(curriculum.start.points, curriculum.widths, assign
                           homecolor="gray25", linecolor="indianred2", versionlabels=NULL,
                           rate=NULL, zoomschool="truncate") {
 
-  # if curriculum.start.points or curriculum.widths are matrices, make them lists
+  # if curriculum.start.points, curriculum.widths, slope1, or slope2 are matrices, make them lists
   if (is.matrix(curriculum.start.points)) {
+    warning("curriculum.start.points was specified as a matrix; it will coerced to a list")
     old.curriculum.start.points <- curriculum.start.points
     curriculum.start.points <- list()
     curriculum.start.points[[1]] <- old.curriculum.start.points
   }
 
   if (is.matrix(curriculum.widths)) {
+    warning("curriculum.widths was specified as a matrix; it will coerced to a list")
     old.curriculum.widths <- curriculum.widths
     curriculum.widths <- list()
     curriculum.widths[[1]] <- old.curriculum.widths
+  }
+
+  if (is.matrix(slope1)) {
+    warning("slope1 was specified as a matrix; it will coerced to a list")
+    old.slope1 <- slope1
+    slope1 <- list()
+    slope1[[1]] <- old.slope1
+  }
+
+  if (is.matrix(slope2)) {
+    warning("slope2 was specified as a matrix; it will coerced to a list")
+    old.slope2 <- slope2
+    slope2 <- list()
+    slope2[[1]] <- old.slope2
   }
 
   # calculate the number of different curricula (e.g. "grades")
@@ -90,6 +120,8 @@ visualizeLearning <- function(curriculum.start.points, curriculum.widths, assign
 
   starts <- unlist(curriculum.start.points)
   ends <- unlist(curriculum.widths)
+  slope1 <- unlist(slope1)
+  slope2 <- unlist(slope2)
 
   dat <- data.frame(
     curriculum=rep(1:n.curricula, times=n.versions),
@@ -107,13 +139,20 @@ visualizeLearning <- function(curriculum.start.points, curriculum.widths, assign
   assignment.df <- assignment.df[assignment.df$curriculum != 0,]
 
   dat <- merge(assignment.df, dat, by="curriculum")
-  dat$slope1 <- slope1
-  dat$slope2 <- slope2
+
+  slope.df <- data.frame(
+    curriculum=rep(1:n.curricula, times=n.versions),
+    version=rep(1:n.versions, each=n.curricula),
+    slope1=slope1,
+    slope2=slope2
+  )
+
+  dat <- merge(dat, slope.df, by=c("curriculum", "version"))
 
   # populate x with the region of non-zero curricular intensity
   x <- seq(
-    min(dat$start) - 1/slope1,
-    max(dat$end) + 1/slope2,
+    min(dat$start) - 1/min(slope1),
+    max(dat$end) + 1/min(slope2),
     length.out=points)
 
   dat2 <- dat[rep(1:nrow(dat), each=length(x)),]

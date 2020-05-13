@@ -70,9 +70,9 @@ school curriculum.}
 \item{curriculum.widths}{a matrix or list of matrices providing the spans of each grade level (rows) and version (columns) of the
 school curriculum.}
 
-\item{slope1}{The steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.}
+\item{slope1}{a matrix or list of matrices describing the steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.}
 
-\item{slope2}{The slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.}
+\item{slope2}{a matrix or list of matrices describing the slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.}
 
 \item{rate}{Scalar, the exponential decay parameter describing the home curriculum function.}
 
@@ -130,6 +130,20 @@ curriculum.widths <- list(
   matrix(c(.04, .04), nrow=2, ncol=1)
 )
 
+slope1 <- list(
+  # "typical curriculum" review slopes for K and first grade
+  matrix(c(15, 15), nrow=2, ncol=1),
+  # "advanced curriculum" review slopes for K and first grade
+  matrix(c(30, 30), nrow=2, ncol=1)
+)
+
+slope2 <- list(
+  # "typical curriculum" advanced slopes for K and first grade
+  matrix(c(50, 50), nrow=2, ncol=1),
+  # "advanced curriculum" advanced slopes for K and first grade
+  matrix(c(25, 25), nrow=2, ncol=1)
+)
+
 # students 1 and 2 get typical curriculum, 3 and 4 get advanced
 which.curriculum <- c(1,1,2,2)
 
@@ -139,7 +153,7 @@ y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
                            dosage=.8, assignment=assignment,
                            which.curriculum=which.curriculum,
                            adaptive.curriculum=FALSE,
-                           slope1=10, slope2=20, rate=6,
+                           slope1=slope1, slope2=slope2, rate=6,
                            ZPD.width=.05, ZPD.offset=.02,
                            curriculum.start.points=curriculum.start.points,
                            curriculum.widths=curriculum.widths,

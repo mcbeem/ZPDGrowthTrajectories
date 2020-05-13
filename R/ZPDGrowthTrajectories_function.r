@@ -30,8 +30,8 @@
 #'   Defaults to 250.
 #' @param threshold Used for determining the maximum achievement to be populated in the lookup tables, specified
 #'   as a growth rate. Defaults to .00001
-#' @param slope1 The steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.
-#' @param slope2 The slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.
+#' @param slope1 a matrix or list of matrices describing the steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.
+#' @param slope2 a matrix or list of matrices describing the slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.
 #' @param rate Scalar, the exponential decay parameter describing the home curriculum function.
 #' @param ZPD.offset scalar value, measured on the same scale as achievement, describing where the ZPD peaks
 #'   relative to the current achievement.
@@ -82,6 +82,20 @@
 #'   matrix(c(.04, .04), nrow=2, ncol=1)
 #' )
 #'
+#' slope1 <- list(
+#'   # "typical curriculum" review slopes for K and first grade
+#'   matrix(c(15, 15), nrow=2, ncol=1),
+#'   # "advanced curriculum" review slopes for K and first grade
+#'   matrix(c(30, 30), nrow=2, ncol=1)
+#' )
+#'
+#' slope2 <- list(
+#'   # "typical curriculum" advanced slopes for K and first grade
+#'   matrix(c(50, 50), nrow=2, ncol=1),
+#'   # "advanced curriculum" advanced slopes for K and first grade
+#'   matrix(c(25, 25), nrow=2, ncol=1)
+#' )
+#'
 #' # students 1 and 2 get typical curriculum, 3 and 4 get advanced
 #' which.curriculum <- c(1,1,2,2)
 #'
@@ -91,7 +105,7 @@
 #'                            dosage=.8, assignment=assignment,
 #'                            which.curriculum=which.curriculum,
 #'                            adaptive.curriculum=FALSE,
-#'                            slope1=10, slope2=20, rate=6,
+#'                            slope1=slope1, slope2=slope2, rate=6,
 #'                            ZPD.width=.05, ZPD.offset=.02,
 #'                            curriculum.start.points=curriculum.start.points,
 #'                            curriculum.widths=curriculum.widths,
@@ -113,6 +127,17 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
   start.time <- Sys.time()
   if (verbose==TRUE) {message(paste0("Execution began at ", start.time, "\n"))}
 
+  # check for correspondence between adaptive.curriculum and versions of curriculum
+  #  (if one version, curriculum.start.points and curriculum.widths are matrices,
+  #  if more than one, they are lists with length > 1)
+
+  if ((adaptive.curriculum==TRUE & !is.list(curriculum.start.points)) |
+       (adaptive.curriculum==TRUE & !is.list(curriculum.start.points) &
+        length(curriculum.start.points)==1)) {
+    warning("Only one version of each curriculum was provided, setting adaptive.curriculum to FALSE")
+    adaptive.curriculum <- FALSE
+  }
+
   # check for correct type of the student descriptive objects
 
   if (!is.numeric(learn.rate)) {stop("learn.rate should be a numeric vector")}
@@ -128,7 +153,6 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
   if (!is.null(which.curriculum) & length(which.curriculum)==1) {
     which.curriculum <- rep(which.curriculum, times=nstudents)
   }
-
 
   # if adaptive.curriculum is TRUE, then the school lookup table will include, for each level of
   #  achievement, the maximum growth that could occur over all the curricula. So there will
@@ -159,20 +183,36 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
   AY <- as.numeric(assignment > 0)
 
 
-  # if curriculum.start.points or curriculum.widths are matrices, make them lists
+  # if curriculum.start.points, curriculum.widths, slope1, or slope2 are matrices, make them lists
   if (is.matrix(curriculum.start.points)) {
-    warning("curriculum.start.points was not specified as a matrix; it will coerced to a list")
+    warning("curriculum.start.points was specified as a matrix; it will coerced to a list")
     old.curriculum.start.points <- curriculum.start.points
     curriculum.start.points <- list()
     curriculum.start.points[[1]] <- old.curriculum.start.points
   }
 
   if (is.matrix(curriculum.widths)) {
-    warning("curriculum.widths was not specified as a matrix; it will coerced to a list")
+    warning("curriculum.widths was specified as a matrix; it will coerced to a list")
     old.curriculum.widths <- curriculum.widths
     curriculum.widths <- list()
     curriculum.widths[[1]] <- old.curriculum.widths
   }
+
+  if (is.matrix(slope1)) {
+    warning("slope1 was specified as a matrix; it will coerced to a list")
+    old.slope1 <- slope1
+    slope1 <- list()
+    slope1[[1]] <- old.slope1
+  }
+
+  if (is.matrix(slope2)) {
+    warning("slope2 was specified as a matrix; it will coerced to a list")
+    old.slope2 <- slope2
+    slope2 <- list()
+    slope2[[1]] <- old.slope2
+  }
+
+
   ##############################################################
   ##### Build the lookup tables for school and home growth #####
   ##############################################################
@@ -198,7 +238,8 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
                                                     ZPD.offset=ZPD.offset,
                                                     curriculum.start.points=curriculum.start.points[[i]],
                                                     curriculum.widths=curriculum.widths[[i]],
-                                                    slope1=slope1, slope2=slope2, maxachievement=maxachievement)
+                                                    slope1=slope1[[i]], slope2=slope2[[i]],
+                                                    maxachievement=maxachievement)
   }
 
 
@@ -222,6 +263,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
       # first col should be the achievement values
       school.lookup.table[1, , 1],
       # remaining cols are the max for each grade across curricula
+      #apply(school.lookup.table[, , 2:3], c(1,2), max)
       t(apply(school.lookup.table[, , 2:3], c(1,2), max))
     )
 
@@ -232,6 +274,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
       # first col should be the achievement values
       school.lookup.table[1, , 1],
       # remaining cols are the max for each grade across curricula
+      #apply(school.lookup.table[, , 2:3], c(1,2), which.max)
       t(apply(school.lookup.table[, , 2:3], c(1,2), which.max))
     )
 

@@ -1,10 +1,10 @@
-#' Function for visualizing the home curriculum.
+#' Function for visualizing the home learning environment.
 #'
-#' \code{visualizeHome} is a function for visualizing the home curriculum function.
+#' \code{visualizeHome()} is a function for visualizing the home learning environment.
 #'
-#'  \code{visualizeHome} plots the home curriculum. It is useful for exploring
-#'    the consequences of the \code{rate} argument to \code{ZPDGrowthTrajectories()}. The function returns a
-#'    \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
+#' \code{visualizeHome()} plots the home curriculum. It is useful for exploring
+#'  the consequences of the \code{rate} argument to \code{ZPDGrowthTrajectories()}. The function returns a
+#'  \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
 #'
 #' @param home.learning.decay.rate Scalar, the exponential decay parameter for the home learning function.
 #'  Larger values indicate a more rapid drop-off. Must be greater than 1. The functions \code{visualizHome()}

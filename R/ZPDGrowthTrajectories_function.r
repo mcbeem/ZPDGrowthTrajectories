@@ -98,6 +98,9 @@
 #'
 #' @return An object of class \code{ZPD, data.frame}
 #'
+#' @seealso \code{\link{visualizeTrajectories()}} for plotting the trajectories and
+#'  \code{\link{describeTrajectories()}} for calculating summary statistics
+#'
 #' @importFrom reshape2 melt
 #' @importFrom stats approx
 #'

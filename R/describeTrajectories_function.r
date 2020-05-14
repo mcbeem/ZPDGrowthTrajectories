@@ -1,15 +1,21 @@
 #' Create summary statistics for ZPDGrowthTrajectories
 #'
-#' \code{describeTrajectories} calculates summary statistics by time interval and curriculum
-#' for \code{ZPDGrowthTrajectories} output.
+#' \code{describeTrajectories} calculates summary statistics by time interval and version of the
+#'   school curriculum for for \code{ZPDGrowthTrajectories()} output.
 #'
 #' @param trajectories An object of class \code{ZPD} produced by the \code{ZPDGrowthTrajectories()}
-#'  function. If needed, this object be converted internally to "long" format.
+#'  function. If needed, this object will be converted internally to "long" format.
+#'
 #' @param assignment a vector indicating which school curriculum, if any, was provided during
 #'  each time interval. If provided, summary statistics are calculated at each transition. Defaults
 #'  to NULL.
-#' @param byCurriculum Logical. Should descriptives be broken down by curriculum? Defaults
-#'  to TRUE.
+#'
+#' @param byVersion Logical. Should descriptives be broken down by version of the curriculum (
+#'   e.g., typical, remedial)? Defaults to TRUE.
+#'
+#' @return An object of class \code{tibble}
+#'
+#' @seealso \code{\link{visualizeTrajectories()}} for plotting the trajectories.
 #'
 #' @importFrom utils tail
 #' @importFrom dplyr summarise group_by n filter select everything
@@ -17,7 +23,7 @@
 #'
 #' @export
 
-describeTrajectories <- function(trajectories, assignment=NULL, byCurriculum=TRUE) {
+describeTrajectories <- function(trajectories, assignment=NULL, byVersion=TRUE) {
 
   # check if trajectories is class ZPD, if not stop
   if(!("ZPD" %in% class(trajectories))) {stop("Object supplied to trajectories argument is not ZPDGrowthTrajectories() output")}
@@ -56,7 +62,7 @@ describeTrajectories <- function(trajectories, assignment=NULL, byCurriculum=TRU
     index <- c(1, which(assignment != lag.assignment), length(assignment))
  }
 
- if (byCurriculum == TRUE) {
+ if (byVersion == TRUE) {
  summarytable <- dplyr::summarise(dplyr::group_by(dplyr::filter(trajectories, time %in% index),
                                   time, curriculum), n=dplyr::n(),
                   mean=mean(achievement, na.rm=TRUE),
@@ -64,7 +70,7 @@ describeTrajectories <- function(trajectories, assignment=NULL, byCurriculum=TRU
                   stddev=stats::sd(achievement, na.rm=TRUE),
                   min=min(achievement, na.rm=TRUE),
                   max=max(achievement, na.rm=TRUE))
- } else if (byCurriculum == FALSE) {
+ } else if (byVersion == FALSE) {
    summarytable <- dplyr::summarise(dplyr::group_by(dplyr::filter(trajectories, time %in% index),
                                                     time), n=dplyr::n(),
                                     mean=mean(achievement, na.rm=TRUE),

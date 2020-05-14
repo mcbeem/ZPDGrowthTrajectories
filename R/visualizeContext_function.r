@@ -1,5 +1,19 @@
 #' Function for visualizing the learning context, including the school and (optionally) home.
 #'
+#' \code{visualizeContext()} is a function for visualizing the learning context that is specified
+#'   by the relevant arguments to \code{ZPDGrowthTrajectories()}.
+#'
+#' The function produces a figure in which time is represented on the x-axis, achievement on the y-axis,
+#'   and the intensity of learning opportunities is represented by the coloration of the background, where
+#'   darker / more opaque means more rapid learning. The home learning context is represented if a value is supplied
+#'   to the \code{home.learning.decay.rate} argument, otherwise the figure only shows the school learning
+#'   context. If there are multiple versions of the curriculum, they are displayed as facets.
+#'   In essence, this figure describes the vector field that is produced by the home and school learning
+#'   contexts, where the coloration or opacity of the background describes the magnitude of the vertical component
+#'   at each location. Individual student growth depends not only on the location in the field, but also on the
+#'   student's learning rate, home environment, decay rate, as well as the global parameters describing the
+#'   size and offset of the ZPD as well as the global weights for school learning, home learning, and decay.
+#'
 #' @param home.learning.decay.rate Scalar, An optional value specifying the exponential decay parameter for the
 #'   home learning function. If provided, the background will be shaded in proportion to the intensity of
 #'   home learning. Larger values indicate more rapid drop-off. Must be greater than 1. If omitted, only the

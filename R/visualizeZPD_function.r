@@ -1,8 +1,8 @@
 #' Visualize the zone of proximal development
 #'
-#' \code{visualizeZPD} is a function for visualizing the zone of proximal development (ZPD).
+#' \code{visualizeZPD()} is a function for visualizing the zone of proximal development (ZPD).
 #'
-#'  \code{visualizeZPD} plots the ZPD against the achievement. It is useful for exploring
+#'  \code{visualizeZPD()} plots the ZPD against the achievement. It is useful for exploring
 #'    the consequences of the \code{zpd.width} and \code{zpd.offset} arguments to
 #'    \code{ZPDGrowthTrajectories()}. The function returns a \code{ggplot} object that
 #'    can be modified with typical \code{ggplot2} arguments.

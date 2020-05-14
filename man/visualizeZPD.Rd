@@ -30,6 +30,8 @@ An object of class \code{ggplot2}
 visualizeZPD(achievement=.3, zpd.offset=.02, zpd.width=.06)
 }
 \seealso{
+\code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+
 Other visualizations: 
 \code{\link{visualizeContext}()},
 \code{\link{visualizeHome}()},

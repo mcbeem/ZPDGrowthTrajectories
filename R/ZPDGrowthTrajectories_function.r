@@ -98,8 +98,12 @@
 #'
 #' @return An object of class \code{ZPD, data.frame}
 #'
-#' @seealso \code{\link{visualizeTrajectories}} for plotting the trajectories and
-#'  \code{\link{describeTrajectories}} for calculating summary statistics
+#' @seealso \code{\link{visualizeContext}}, \code{\link{visualizeZPD}}, \code{\link{visualizeHome}}, and
+#'   \code{\link{visualizeSchool}} for plotting the ZPD, home, and school learning context.
+#'
+#' @seealso \code{\link{visualizeTrajectories}} for plotting the trajectories
+#'
+#' @seealso \code{\link{describeTrajectories}} for calculating summary statistics
 #'
 #' @importFrom reshape2 melt
 #' @importFrom stats approx

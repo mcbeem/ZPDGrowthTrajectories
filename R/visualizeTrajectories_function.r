@@ -20,6 +20,8 @@
 #' @seealso \code{\link{describeTrajectories}} for calculating summary statistics of the generated
 #'  trajectories.
 #'
+#' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+#'
 #' @importFrom utils tail
 #'
 #' @export

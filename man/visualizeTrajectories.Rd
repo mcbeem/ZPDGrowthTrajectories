@@ -28,6 +28,8 @@ to NULL.}
 \code{\link{describeTrajectories}} for calculating summary statistics of the generated
  trajectories.
 
+\code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+
 Other visualizations: 
 \code{\link{visualizeContext}()},
 \code{\link{visualizeHome}()},

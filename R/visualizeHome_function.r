@@ -16,6 +16,8 @@
 #'
 #' @family visualizations
 #'
+#' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+#'
 #' @examples
 #' visualizeHome(home.learning.decay.rate=5)
 #' @export

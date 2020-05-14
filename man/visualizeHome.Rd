@@ -28,6 +28,8 @@ An object of class \code{ggplot2}
 visualizeHome(home.learning.decay.rate=5)
 }
 \seealso{
+\code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+
 Other visualizations: 
 \code{\link{visualizeContext}()},
 \code{\link{visualizeSchool}()},

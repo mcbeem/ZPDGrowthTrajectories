@@ -84,6 +84,8 @@
 #'
 #' @family visualizations
 #'
+#' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+#'
 #' @importFrom stats uniroot
 #'
 #' @examples

@@ -200,6 +200,10 @@ describeTrajectories(y, assignment=assignment, byVersion=FALSE)
 visualizeTrajectories(y)
 }
 \seealso{
-\code{\link{visualizeTrajectories}} for plotting the trajectories and
- \code{\link{describeTrajectories}} for calculating summary statistics
+\code{\link{visualizeContext}}, \code{\link{visualizeZPD}}, \code{\link{visualizeHome}}, and
+  \code{\link{visualizeSchool}} for plotting the ZPD, home, and school learning context.
+
+\code{\link{visualizeTrajectories}} for plotting the trajectories
+
+\code{\link{describeTrajectories}} for calculating summary statistics
 }

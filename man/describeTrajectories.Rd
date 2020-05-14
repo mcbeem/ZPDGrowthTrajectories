@@ -26,4 +26,6 @@ An object of class \code{tibble}
 }
 \seealso{
 \code{\link{visualizeTrajectories}} for plotting the trajectories.
+
+\code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
 }

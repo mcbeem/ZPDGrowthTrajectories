@@ -39,6 +39,8 @@ visualizeSchool(start.point=.2, width=.1, review.slope=10, advanced.slope=15)
 
 }
 \seealso{
+\code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+
 Other visualizations: 
 \code{\link{visualizeContext}()},
 \code{\link{visualizeHome}()},

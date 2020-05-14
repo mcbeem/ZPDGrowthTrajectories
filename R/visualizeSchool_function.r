@@ -29,6 +29,8 @@
 #'
 #' @family visualizations
 #'
+#' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+#'
 #' @export
 
 visualizeSchool <- function(start.point, width, review.slope, advanced.slope) {

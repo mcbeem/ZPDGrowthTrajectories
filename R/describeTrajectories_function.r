@@ -17,6 +17,8 @@
 #'
 #' @seealso \code{\link{visualizeTrajectories}} for plotting the trajectories.
 #'
+#' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+#'
 #' @importFrom utils tail
 #' @importFrom dplyr summarise group_by n filter select everything
 #' @importFrom stats median sd

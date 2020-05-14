@@ -18,6 +18,8 @@
 #'
 #' @family visualizations
 #'
+#' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+#'
 #' @examples
 #' visualizeZPD(achievement=.3, zpd.offset=.02, zpd.width=.06)
 #' @export

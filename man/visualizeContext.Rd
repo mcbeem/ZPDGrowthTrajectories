@@ -155,6 +155,8 @@ visualizeContext(home.learning.decay.rate=6,
 
 }
 \seealso{
+\code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
+
 Other visualizations: 
 \code{\link{visualizeHome}()},
 \code{\link{visualizeSchool}()},

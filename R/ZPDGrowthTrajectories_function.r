@@ -171,7 +171,7 @@
 #'                            school.weight=.5, home.weight=1, decay.weight=.05,
 #'                            verbose=TRUE, output.format="long")
 #'
-#' describeTrajectories(y, assignment=assignment, byCurriculum=FALSE)
+#' describeTrajectories(y, assignment=assignment, byVersion=FALSE)
 #' visualizeTrajectories(y)
 
 ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,

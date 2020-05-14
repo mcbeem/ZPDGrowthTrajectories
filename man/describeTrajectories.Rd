@@ -25,5 +25,5 @@ An object of class \code{tibble}
   school curriculum for for \code{ZPDGrowthTrajectories()} output.
 }
 \seealso{
-\code{\link{visualizeTrajectories()}} for plotting the trajectories.
+\code{\link{visualizeTrajectories}} for plotting the trajectories.
 }

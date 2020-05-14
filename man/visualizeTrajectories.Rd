@@ -25,7 +25,7 @@ to NULL.}
  different colored line.
 }
 \seealso{
-\code{\link{describeTrajectories()}} for calculating summary statistics of the generated
+\code{\link{describeTrajectories}} for calculating summary statistics of the generated
  trajectories.
 
 Other visualizations: 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualizeHome_function.r
 \name{visualizeHome}
 \alias{visualizeHome}
-\title{Function for visualizing the home curriculum.}
+\title{Function for visualizing the home learning environment.}
 \usage{
 visualizeHome(home.learning.decay.rate, max = 1)
 }
@@ -17,12 +17,12 @@ and \code{visualizeContext()} can be used to visualize, understand, and select a
 An object of class \code{ggplot2}
 }
 \description{
-\code{visualizeHome} is a function for visualizing the home curriculum function.
+\code{visualizeHome()} is a function for visualizing the home learning environment.
 }
 \details{
-\code{visualizeHome} plots the home curriculum. It is useful for exploring
-   the consequences of the \code{rate} argument to \code{ZPDGrowthTrajectories()}. The function returns a
-   \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
+\code{visualizeHome()} plots the home curriculum. It is useful for exploring
+ the consequences of the \code{rate} argument to \code{ZPDGrowthTrajectories()}. The function returns a
+ \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
 }
 \examples{
 visualizeHome(home.learning.decay.rate=5)

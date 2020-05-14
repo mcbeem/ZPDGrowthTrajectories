@@ -36,7 +36,11 @@ setwd(here())
 check()
 devtools::test()
 
-
+.rs.restartR()
+detach("package:ZPDGrowthTrajectories", unload=TRUE)
+install_github("mcbeem/ZPDGrowthTrajectories")
+library(ZPDGrowthTrajectories)
+?visualizeSchool
 
       library(devtools)
       library(roxygen2)

@@ -25,9 +25,12 @@ the elements of the \code{curriculum.advanced.slopes} argument to \code{ZPDGrowt
 An object of class \code{ggplot2}
 }
 \description{
-\code{visualizeSchool} plots the school curriculum. It is useful for exploring
+\code{visualizeSchool()} is a function for visualizing the school curriculum function.
+}
+\details{
+\code{visualizeSchool()} plots the school curriculum. It is useful for exploring
    the consequences of the \code{curriculum.start.points}, \code{curriculum.widths},
-   \code{curriculum.lower.slope}, \code{curriculum.upper.slope}, and \code{alpha} arguments to
+   \code{curriculum.lower.slopes}, \code{curriculum.upper.slopes}, and \code{alpha} arguments to
    \code{ZPDGrowthTrajectories()}. The function returns a
    \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
 }

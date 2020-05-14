@@ -17,7 +17,7 @@
 #'
 #' @family visualizations
 #'
-#' @seealso \code{\link{describeTrajectories()}} for calculating summary statistics of the generated
+#' @seealso \code{\link{describeTrajectories}} for calculating summary statistics of the generated
 #'  trajectories.
 #'
 #' @importFrom utils tail

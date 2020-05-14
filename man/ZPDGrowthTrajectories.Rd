@@ -199,3 +199,7 @@ y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
 describeTrajectories(y, assignment=assignment, byCurriculum=FALSE)
 visualizeTrajectories(y)
 }
+\seealso{
+\code{\link{visualizeTrajectories()}} for plotting the trajectories and
+ \code{\link{describeTrajectories()}} for calculating summary statistics
+}

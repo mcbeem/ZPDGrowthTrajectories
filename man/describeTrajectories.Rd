@@ -4,20 +4,26 @@
 \alias{describeTrajectories}
 \title{Create summary statistics for ZPDGrowthTrajectories}
 \usage{
-describeTrajectories(trajectories, assignment = NULL, byCurriculum = TRUE)
+describeTrajectories(trajectories, assignment = NULL, byVersion = TRUE)
 }
 \arguments{
 \item{trajectories}{An object of class \code{ZPD} produced by the \code{ZPDGrowthTrajectories()}
-function. If needed, this object be converted internally to "long" format.}
+function. If needed, this object will be converted internally to "long" format.}
 
 \item{assignment}{a vector indicating which school curriculum, if any, was provided during
 each time interval. If provided, summary statistics are calculated at each transition. Defaults
 to NULL.}
 
-\item{byCurriculum}{Logical. Should descriptives be broken down by curriculum? Defaults
-to TRUE.}
+\item{byVersion}{Logical. Should descriptives be broken down by version of the curriculum (
+e.g., typical, remedial)? Defaults to TRUE.}
+}
+\value{
+An object of class \code{tibble}
 }
 \description{
-\code{describeTrajectories} calculates summary statistics by time interval and curriculum
-for \code{ZPDGrowthTrajectories} output.
+\code{describeTrajectories} calculates summary statistics by time interval and version of the
+  school curriculum for for \code{ZPDGrowthTrajectories()} output.
+}
+\seealso{
+\code{\link{visualizeTrajectories()}} for plotting the trajectories.
 }

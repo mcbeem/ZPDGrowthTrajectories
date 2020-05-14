@@ -15,7 +15,7 @@
 #'
 #' @return An object of class \code{tibble}
 #'
-#' @seealso \code{\link{visualizeTrajectories()}} for plotting the trajectories.
+#' @seealso \code{\link{visualizeTrajectories}} for plotting the trajectories.
 #'
 #' @importFrom utils tail
 #' @importFrom dplyr summarise group_by n filter select everything

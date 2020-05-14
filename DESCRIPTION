@@ -16,7 +16,8 @@ Imports:
   pracma,
   reshape2,
   ggplot2,
-  dplyr
+  dplyr,
+  checkmate
 Suggests: 
     knitr,
     rmarkdown,

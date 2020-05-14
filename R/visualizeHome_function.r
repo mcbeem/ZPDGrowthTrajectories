@@ -18,11 +18,19 @@
 #'
 #' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
 #'
+#' @importFrom checkmate qtest
+#'
 #' @examples
 #' visualizeHome(home.learning.decay.rate=5)
+#'
 #' @export
 
 visualizeHome <- function(home.learning.decay.rate, max=1) {
+
+  # check arguments
+
+ if(checkmate::qtest(home.learning.decay.rate, "n?(1,)")==FALSE) {stop("home.learning.decay.rate must be a scalar greater than 1")}
+ if(checkmate::qtest(max, "n?(0,)")==FALSE) {stop("max must be a scalar greater than 0")}
 
   rate <- home.learning.decay.rate
 

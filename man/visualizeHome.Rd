@@ -26,6 +26,7 @@ An object of class \code{ggplot2}
 }
 \examples{
 visualizeHome(home.learning.decay.rate=5)
+
 }
 \seealso{
 \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.

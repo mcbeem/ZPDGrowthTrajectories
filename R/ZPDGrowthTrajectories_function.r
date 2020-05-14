@@ -197,6 +197,39 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
   start.time <- Sys.time()
   if (verbose==TRUE) {message(paste0("Execution began at ", start.time, "\n"))}
 
+  ## Check for valid inputs ##
+
+  # learn.rate home.env decay.rate  initial.ach: vector or scalar, [0,inf), length in compliance
+
+  # ZPD.width scalar > 0
+  # ZPD.offset scalar
+
+  # home.learning.decay.rate scalar > 1. Check for implied max.achievement
+
+  #curriculum.start.points curriculum.widths curriculum.review.slopes curriculum.advanced.slopes
+  #  all need to be matrices or lists, all with same dimensions
+  #  widths > 0, start.points [0,], slopes > 0, check vs width
+
+  # assignment integer vector, highest value needs to match highest row in above. warning if some
+  #  values in above are not used
+
+  #dosage scalar numeric range 0-1, warning at 0,1
+
+  #adaptive.curriculum=FALSE logical. if TRUE there must be >1 version of curriculum
+
+  # which.curriculum=NULL must be vector, same length as assignment, and should match dimensionality
+  #  of curriculum objects. warning if not all versions are assigned
+
+  #school.weight home.weight decay.weight must be scalars [0,)
+
+  # integration.points=250 integer, check against max.achievement for coverage, warning if insufficient
+
+  # threshold=.00001 warning if result is below max school curriculum + width
+
+  # verbose=TRUE check logical
+
+  # output.format="long" check "long" or "wide"
+
   # check for correspondence between adaptive.curriculum and versions of curriculum
   #  (if one version, curriculum.start.points and curriculum.widths are matrices,
   #  if more than one, they are lists with length > 1)

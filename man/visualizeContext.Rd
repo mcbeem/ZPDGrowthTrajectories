@@ -87,6 +87,9 @@ curriculum.}
 given, the background is shaded proportional to the home learning rate. If NULL, only the school
 curriculum is displayed. Defaults to NULL.}
 }
+\value{
+An object of class \code{ggplot2}
+}
 \description{
 Function for visualizing the learning context, including the school and (optionally) home.
 }
@@ -139,11 +142,10 @@ visualizeContext(home.learning.decay.rate=6,
 
 }
 \seealso{
-[visualizeZPD()], [visualizeSchool()], [visualizeHome()], and [visualizeTrajectories()]
-
 Other visualizations: 
 \code{\link{visualizeHome}()},
 \code{\link{visualizeSchool}()},
-\code{\link{visualizeTrajectories}()}
+\code{\link{visualizeTrajectories}()},
+\code{\link{visualizeZPD}()}
 }
 \concept{visualizations}

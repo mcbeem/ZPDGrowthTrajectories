@@ -13,6 +13,9 @@ and \code{visualizeContext()} can be used to visualize, understand, and select a
 
 \item{max}{The maximum value to plot on the x-axis; defaults to 1}
 }
+\value{
+An object of class \code{ggplot2}
+}
 \description{
 \code{visualizeHome} is a function for visualizing the home curriculum function.
 }
@@ -25,11 +28,10 @@ and \code{visualizeContext()} can be used to visualize, understand, and select a
 visualizeHome(home.learning.decay.rate=5)
 }
 \seealso{
-[visualizeZPD()], [visualizeSchool()]. [visualizeContext()], and [visualizeTrajectories()]
-
 Other visualizations: 
 \code{\link{visualizeContext}()},
 \code{\link{visualizeSchool}()},
-\code{\link{visualizeTrajectories}()}
+\code{\link{visualizeTrajectories}()},
+\code{\link{visualizeZPD}()}
 }
 \concept{visualizations}

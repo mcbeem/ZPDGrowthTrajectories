@@ -21,6 +21,9 @@ the elements of the \code{curriculum.review.slopes} argument to \code{ZPDGrowthT
  Conceptually controls the amount of advanced content. This value would become one of
 the elements of the \code{curriculum.advanced.slopes} argument to \code{ZPDGrowthTrajectories()}.}
 }
+\value{
+An object of class \code{ggplot2}
+}
 \description{
 \code{visualizeSchool} plots the school curriculum. It is useful for exploring
    the consequences of the \code{curriculum.start.points}, \code{curriculum.widths},
@@ -33,11 +36,10 @@ visualizeSchool(start.point=.2, width=.1, review.slope=10, advanced.slope=15)
 
 }
 \seealso{
-[visualizeZPD()], [visualizeHome()]. [visualizeContext()], and [visualizeTrajectories()]
-
 Other visualizations: 
 \code{\link{visualizeContext}()},
 \code{\link{visualizeHome}()},
-\code{\link{visualizeTrajectories}()}
+\code{\link{visualizeTrajectories}()},
+\code{\link{visualizeZPD}()}
 }
 \concept{visualizations}

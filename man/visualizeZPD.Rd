@@ -14,6 +14,9 @@ relative to the current achievement.}
 
 \item{zpd.width}{the radius of the ZPD.}
 }
+\value{
+An object of class \code{ggplot2}
+}
 \description{
 \code{visualizeZPD} is a function for visualizing the zone of proximal development (ZPD).
 }
@@ -26,3 +29,11 @@ relative to the current achievement.}
 \examples{
 visualizeZPD(achievement=.3, zpd.offset=.02, zpd.width=.06)
 }
+\seealso{
+Other visualizations: 
+\code{\link{visualizeContext}()},
+\code{\link{visualizeHome}()},
+\code{\link{visualizeSchool}()},
+\code{\link{visualizeTrajectories}()}
+}
+\concept{visualizations}

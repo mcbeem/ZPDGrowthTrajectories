@@ -196,7 +196,7 @@ y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
                            school.weight=.5, home.weight=1, decay.weight=.05,
                            verbose=TRUE, output.format="long")
 
-describeTrajectories(y, assignment=assignment, byVersion=FALSE)
+describeTrajectories(y, byVersion=FALSE)
 visualizeTrajectories(y)
 }
 \seealso{

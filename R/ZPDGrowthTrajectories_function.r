@@ -107,6 +107,7 @@
 #'
 #' @importFrom reshape2 melt
 #' @importFrom stats approx
+#' @importFrom dplyr select
 #'
 #' @export
 
@@ -175,7 +176,7 @@
 #'                            school.weight=.5, home.weight=1, decay.weight=.05,
 #'                            verbose=TRUE, output.format="long")
 #'
-#' describeTrajectories(y, assignment=assignment, byVersion=FALSE)
+#' describeTrajectories(y, byVersion=FALSE)
 #' visualizeTrajectories(y)
 
 ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
@@ -279,12 +280,11 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
 
 
   # the number of students is the length of the learn.rate vector
-  nstudents <- length(learn.rate)  ### check this now that students is
+  nstudents <- length(learn.rate)
 
   # AY is an indicator of whether it is summer or not (AY = "academic year")
   #   this is used to replace a slow if() with fast multiplication
   AY <- as.numeric(assignment > 0)
-
 
   # if curriculum.start.points, curriculum.widths, slope1, or slope2 are matrices, make them lists
   if (is.matrix(curriculum.start.points)) {
@@ -425,7 +425,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
 
   # name the columns
   names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
-                          "curriculum", paste("time", seq(1:times), sep=""))
+                          "version", paste("time", seq(1:times), sep=""))
 
   if (output.format=="long") {
 
@@ -434,18 +434,18 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
     achievement <- reshape2::melt(achievement, id.vars=1:6)
     achievement[,7] <- rep(seq(1:times), each=length(learn.rate))
     names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
-                            "curriculum", "time", "achievement")
+                            "version", "time", "achievement")
     achievement <- achievement[order(achievement$id),]
 
     achievement$assignment <- rep(assignment, times=length(learn.rate))
 
     if (adaptive.curriculum==TRUE) {
       for (i in 1:max(assignment)) {
-        achievement$curriculum[achievement$assignment==i] <- round(stats::approx(x=which.school.lookup[,1], y=which.school.lookup[,1+i],
+        achievement$version[achievement$assignment==i] <- round(stats::approx(x=which.school.lookup[,1], y=which.school.lookup[,1+i],
                                                                           xout=achievement$achievement[achievement$assignment==i])$y, 0)
       }
 
-      achievement$curriculum[achievement$assignment==0] <- NA
+      achievement$version[achievement$assignment==0] <- NA
 
     }
   }
@@ -459,6 +459,9 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
 
     message(paste0("\nExecution required ", round((end.time-start.time)[[1]],2), " ", time.unit, "."))
   }
+
+  # reorder variables
+  achievement <- dplyr::select(achievement, id, learn.rate, home.env, decay.rate, initial.ach, version, time, assignment, achievement)
 
   class(achievement) = c("ZPD", "data.frame")
   return(achievement)

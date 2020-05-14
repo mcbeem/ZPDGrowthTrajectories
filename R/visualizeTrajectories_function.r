@@ -11,9 +11,8 @@
 #'  \code{ggplot}.The function returns a \code{ggplot} object that can be modified with typical
 #'  \code{ggplot2} arguments.
 #'
-#' @param assignment a vector indicating which school curriculum, if any, was provided during
-#'  each time interval. If provided, vertical lines are added to indicate transitions. Defaults
-#'  to NULL.
+#' @param showTransitions Logical. Should vertical lines be drawn when the school curriculum changes?
+#'   Defaults to FALSE
 #'
 #' @family visualizations
 #'
@@ -26,10 +25,13 @@
 #'
 #' @export
 
-visualizeTrajectories <- function(trajectories, assignment=NULL) {
+  visualizeTrajectories <- function(trajectories, showTransitions=FALSE) {
 
   # check if trajectories is class ZPD, if not stop
   if(!("ZPD" %in% class(trajectories))) {stop("Object supplied to trajectories argument is not ZPDGrowthTrajectories() output")}
+
+  # check if showTransitions is logical
+  if (is.logical(showTransitions) == FALSE) {stop("showTransitions must be TRUE or FALSE")}
 
   # check to see if the trajectories are in long or wide format
   # if long, it will have 9 columns
@@ -52,7 +54,10 @@ visualizeTrajectories <- function(trajectories, assignment=NULL) {
     ggplot2::theme(panel.background=ggplot2::element_blank(), panel.grid.major=ggplot2::element_blank(),
                    panel.grid.minor=ggplot2::element_blank())
 
-  if (!is.null(assignment)) {
+  if (showTransitions==TRUE) {
+
+    # get assignment object from ZPDGrowthTrajectories output
+    assignment <- trajectories$assignment[trajectories$version==1 & trajectories$id==1]
 
     # find transitions in the assignment object
     lag.assignment <- c(utils::tail(assignment,-1),NA)

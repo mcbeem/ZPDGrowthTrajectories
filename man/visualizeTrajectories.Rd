@@ -19,3 +19,12 @@ to NULL.}
 \description{
 \code{visualizeTrajectories} plots synthetic growth trajectories using \code{ggplot2}.
 }
+\seealso{
+[visualizeZPD()], [visualizeHome()], [visualizeSchool()]. [visualizeContext()]]
+
+Other visualizations: 
+\code{\link{visualizeContext}()},
+\code{\link{visualizeHome}()},
+\code{\link{visualizeSchool}()}
+}
+\concept{visualizations}

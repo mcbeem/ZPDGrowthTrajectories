@@ -5,43 +5,98 @@
 #' This function creates synthetic achievement growth trajectories from a quantitative intepretation
 #' of Vygotsky theory based on an upcoming publication. The user describes
 #' the student characteristics (learning rate, decay rate, initial achievement, and home environment) as
-#' well as the home 'curriculum' and the school curriculum. The function will then create a simulated
+#' well as the home learning environment and the school curriculum. The function will then create a simulated
 #' growth trajectory for each student.
 #'
-#' @param learn.rate vector of learning rates, one per child.
-#' @param decay.rate vector of decay rates, one per child. Controls forgetting.
-#' @param initial.ach vector of initial achievements, one per child.
-#' @param home.env vector of home environments, one per child.
-#' @param school.weight a global scalar for adjusting the growth from school exposure; prevents having to adjust
-#'  all learn.rate values
-#' @param home.weight a global scalar for adjusting the growth from home; prevents having to adjust all home.env values
-#' @param decay.weight a global scalar for adjusting the rate of forgetting; prevents having to adjust all decay.rate values
-#' @param dosage scalar dose parameter, controls mixing of school curriculum and home curriculum during school years.
-#'   Must be [0,1].
-#' @param assignment a vector. The length is the number of time intervals to simulate. Each entry contains a number representing which
-#'   grade-level curriculum to present. Zero denotes summers. The numbers correspond to the row index of the
-#'    \code{curriculum.start.points} and \code{curriculum.widths} objects.
-#' @param adaptive.curriculum logical; if there are multiple versions of the school curriculum for each time period,
+#' @param learn.rate Vector of learning rates, one per child. These values specify the global learning rate
+#'  for each student. Values should be positive. The lengths of \code{learn.rate}, \code{home.env}, \code{decay.rate},
+#'  and \code{initial.ach} indicate the number of students to simulate and must match.
+#'
+#' @param home.env Vector of home environments, one per child. These values describe how conducive each
+#'  student's home environment is for learning. Values should be positive.
+#'
+#' @param decay.rate Vector of decay rates, one per child. These values describe each student's rate of learning
+#'   loss or decay. Values should be positive.
+#'
+#' @param initial.ach Vector of values describing the initial achievement level for each child. They should be zero
+#'   or higher.
+#'
+#' @param ZPD.width Scalar value describing the radius of the ZPD. Affects the global growth rate. The function
+#'   \code{visualizeZPD()} can be used to visualize different choices.
+#'
+#' @param ZPD.offset Scalar, measured on the same scale as achievement, describing where the ZPD peaks
+#'   relative to the current achievement. A positive value means that the ZPD peaks at a higher achievement level that the
+#'   student has currently attained. The function \code{visualizeZPD} can be used to select visualize, select, and understand
+#'   this value. Positive values are generally appropriate, though the magnitude depends on \code{ZPD.width}.
+#'
+#' @param home.learning.decay.rate Scalar, the exponential decay parameter for the home learning function. Larger values indicate
+#'   more rapid drop-off. Must be greater than 1. The functions \code{visualizHome()} and \code{visualizeContext()} can be used to
+#'   visualize, understand, and select appropriate values.
+#'
+#' @param curriculum.start.points a matrix or list of matrices providing the start points of the school curriculum to
+#'   be offered during each grade (or other time division). The matrices should have one column and one row per grade. Each
+#'   list entry corresponds to a version of the curriculum, such as 'typical' or 'remedial.' The functions
+#'   \code{visualizeSchool()} and \code{visualizeContext()} can be used to visualize, understand, and select appropriate
+#'   values.
+#'
+#' @param curriculum.widths a matrix or list of matrices providing the widths or spans of the school curriculum to
+#'   be offered during each grade (or other time division). The matrices should have one column and one row per grade. Each
+#'   list entry corresponds to a version of the curriculum, such as 'typical' or 'remedial.' The functions
+#'   \code{visualizeSchool()} and \code{visualizeContext()} can be used to visualize, understand, and select appropriate
+#'   values.
+#'
+#' @param curriculum.review.slopes A matrix or list of matrices describing the steepness of the school curriculum cutoff
+#'   at the lower range. Conceptually controls the amount of review content. Small numbers indicate a shallower slope and
+#'   therefore more review content. As general guidance, values in the range of 10-20 describe heavy review, while 50-100
+#'   decribes little review, though this depends on the scale of the curriculum. The functions \code{visualizeSchool()} and
+#'   \code{visualizeContext()} can be used to visualize, understand, and select appropriate values.
+#'
+#' @param curriculum.advanced.slopes a matrix or list of matrices describing the steepness of the school curriculum
+#'   cutoff at the upper range. Conceptually controls the amount of advanced content. Small numbers indicate a shallower slope and
+#'   therefore more advanced content. As general guidance, values in the range of 10-20 describe heavy review, while 50-100
+#'   decribes little review, though this depends on the scale of the curriculum. The functions \code{visualizeSchool()} and
+#'   \code{visualizeContext()} can be used to visualize, understand, and select appropriate values.
+#'
+#' @param assignment A vector of integer values assigning school curricula to time intervals. The length is the number of
+#'   time intervals to simulate. Each entry contains a number representing which grade-level curriculum to present. Zero
+#'   denotes periods of no school instruction, such as summer breaks. The numbers correspond to the row index of the
+#'    \code{curriculum.start.points}, \code{curriculum.widths}, \code{curriculum.review.slopes}, and
+#'    \code{curriculum.advanced.slopes} objects.
+#'
+#' @param dosage Scalar dose parameter, controls mixing of school curriculum and home curriculum during school years,
+#'  where 1 denotes all school and 0 denotes all home. Must be [0,1].
+#'
+#' @param adaptive.curriculum Logical; if there are multiple versions of the school curriculum for each time period,
 #'   should they be assigned adaptively? TRUE means that the version that would produce the optimal achievement in
-#'   each time period is presented. FALSE means that the curriculum assignment is based on which.curriculum.
+#'   each time period is presented. FALSE means that the curriculum assignment is based on \code{which.curriculum}.
 #'   Defaults to FALSE
-#' @param which.curriculum Defaults to NULL
+#'
+#' @param which.curriculum Vector of integer values, one for each student, indicating which version of the curriculum is presented
+#'   to each student. The values correspond to the list index for the \code{curriculum.start.points}, \code{curriculum.widths},
+#'   \code{curriculum.review.slopes}, and \code{curriculum.advanced.slopes} objects. If NULL, all students are assigned
+#'   to the first curriculum. Defaults to NULL.
+#'
+#' @param school.weight A scalar for adjusting the overall growth from school exposure; prevents having to adjust
+#'  all \code{learn.rate} values. Must be greater than or equal to 0. Defaults to 1.
+#'
+#' @param home.weight A scalar for adjusting the overall growth from home; prevents having to adjust all \code{home.env}
+#'  values. Must be greater than or equal to 0. Defaults to 1.
+#'
+#' @param decay.weight A scalar for adjusting the overall rate of decay or forgetting; prevents having to adjust all
+#'   \code{decay.rate} values. Defaults to 0.1.
+#'
 #' @param integration.points Integer number of integration points. Controls tradeoff between accuracy and execution speed.
 #'   Defaults to 250.
-#' @param threshold Used for determining the maximum achievement to be populated in the lookup tables, specified
-#'   as a growth rate. Defaults to .00001
-#' @param slope1 a matrix or list of matrices describing the steepness of the school curriculum cutoff at the lower range. Conceptually controls the amount of review content.
-#' @param slope2 a matrix or list of matrices describing the slope of the school curriculum at the upper range. Conceptually controls the amount of advanced content.
-#' @param rate Scalar, the exponential decay parameter describing the home curriculum function.
-#' @param ZPD.offset scalar value, measured on the same scale as achievement, describing where the ZPD peaks
-#'   relative to the current achievement.
-#' @param curriculum.start.points a matrix or list of matrices providing the start points of each grade level (rows) and version (columns) of the
-#'   school curriculum.
-#' @param curriculum.widths a matrix or list of matrices providing the spans of each grade level (rows) and version (columns) of the
-#'   school curriculum.
-#' @param ZPD.width the radius of the ZPD.
+#'
+#' @param threshold A scalar value Used for determining the maximum achievement to be populated in the lookup tables, specified
+#'   as a growth rate. The max achievement to be populated is the value at which the growth rate calls below the this number.
+#'   Defaults to .00001.
+#'
 #' @param verbose logical, should status updates be printed to the console? Defaults to TRUE.
+#'
 #' @param output.format Format of the results, "long" for long format, "wide" for wide. Defaults to "long".
+#'
+#' @return An object of class \code{ZPD, data.frame}
 #'
 #' @importFrom reshape2 melt
 #' @importFrom stats approx
@@ -82,14 +137,14 @@
 #'   matrix(c(.04, .04), nrow=2, ncol=1)
 #' )
 #'
-#' slope1 <- list(
+#' curriculum.review.slopes <- list(
 #'   # "typical curriculum" review slopes for K and first grade
 #'   matrix(c(15, 15), nrow=2, ncol=1),
 #'   # "advanced curriculum" review slopes for K and first grade
 #'   matrix(c(30, 30), nrow=2, ncol=1)
 #' )
 #'
-#' slope2 <- list(
+#' curriculum.advanced.slopes <- list(
 #'   # "typical curriculum" advanced slopes for K and first grade
 #'   matrix(c(50, 50), nrow=2, ncol=1),
 #'   # "advanced curriculum" advanced slopes for K and first grade
@@ -101,28 +156,36 @@
 #'
 #' y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
 #'                            decay.rate=decay.rate, initial.ach=initial.ach,
-#'                            school.weight=.5, home.weight=1, decay.weight=.05,
-#'                            dosage=.8, assignment=assignment,
-#'                            which.curriculum=which.curriculum,
-#'                            adaptive.curriculum=FALSE,
-#'                            slope1=slope1, slope2=slope2, rate=6,
 #'                            ZPD.width=.05, ZPD.offset=.02,
+#'                            home.learning.decay.rate=6,
 #'                            curriculum.start.points=curriculum.start.points,
 #'                            curriculum.widths=curriculum.widths,
+#'                            curriculum.review.slopes=curriculum.review.slopes,
+#'                            curriculum.advanced.slopes=curriculum.advanced.slopes,
+#'                            assignment=assignment, dosage=.8,
+#'                            adaptive.curriculum=FALSE,
+#'                            which.curriculum=which.curriculum,
+#'                            school.weight=.5, home.weight=1, decay.weight=.05,
 #'                            verbose=TRUE, output.format="long")
 #'
 #' describeTrajectories(y, assignment=assignment, byCurriculum=FALSE)
 #' visualizeTrajectories(y)
 
 ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
-                                  school.weight, home.weight, decay.weight, dosage,
-                                  assignment,
-                                  adaptive.curriculum=FALSE, which.curriculum=NULL,
                                   ZPD.width, ZPD.offset,
+                                  home.learning.decay.rate,
                                   curriculum.start.points, curriculum.widths,
-                                  slope1, slope2, rate=6,
+                                  curriculum.review.slopes, curriculum.advanced.slopes,
+                                  assignment, dosage,
+                                  adaptive.curriculum=FALSE, which.curriculum=NULL,
+                                  school.weight, home.weight, decay.weight,
                                   integration.points=250, threshold=.00001,
                                   verbose=TRUE, output.format="long") {
+
+  # rename objects
+  slope1 <- curriculum.review.slopes
+  slope2 <- curriculum.advanced.slopes
+  rate <- home.learning.decay.rate
 
   start.time <- Sys.time()
   if (verbose==TRUE) {message(paste0("Execution began at ", start.time, "\n"))}

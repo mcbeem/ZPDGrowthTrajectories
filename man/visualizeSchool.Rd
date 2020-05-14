@@ -4,29 +4,40 @@
 \alias{visualizeSchool}
 \title{Function for visualizing the school curriculum.}
 \usage{
-visualizeSchool(start.point, width, slope1, slope2)
+visualizeSchool(start.point, width, review.slope, advanced.slope)
 }
 \arguments{
 \item{start.point}{The point at which the curriculum reaches full intensity. This value would become one of
-the elements of the curriculum.start.points argument to \code{ZPDGrowthTrajectories}.}
+the elements of the \code{curriculum.start.points} argument to \code{ZPDGrowthTrajectories()}.}
 
 \item{width}{The highest point at which the curriculum is at full intensity. This value would become one of
-the elements of the curriculum.widths argument to \code{ZPDGrowthTrajectories}.}
+the elements of the \code{curriculum.widths} argument to \code{ZPDGrowthTrajectories()}.}
 
-\item{slope1}{The steepness of the school curriculum cutoff at the lower range.
-Conceptually controls the amount of review content.}
+\item{review.slope}{The steepness of the school curriculum cutoff at the lower range.
+ Conceptually controls the amount of review content. This value would become one of
+the elements of the \code{curriculum.review.slopes} argument to \code{ZPDGrowthTrajectories()}.}
 
-\item{slope2}{The slope of the school curriculum at the upper range.
-Conceptually controls the amount of advanced content.}
+\item{advanced.slope}{The slope of the school curriculum at the upper range.
+ Conceptually controls the amount of advanced content. This value would become one of
+the elements of the \code{curriculum.advanced.slopes} argument to \code{ZPDGrowthTrajectories()}.}
 }
 \description{
-\code{visualizeSchool} plots school curriculum. It is useful for exploring
+\code{visualizeSchool} plots the school curriculum. It is useful for exploring
    the consequences of the \code{curriculum.start.points}, \code{curriculum.widths},
    \code{curriculum.lower.slope}, \code{curriculum.upper.slope}, and \code{alpha} arguments to
    \code{ZPDGrowthTrajectories()}. The function returns a
    \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
 }
 \examples{
-visualizeSchool(start.point=.2, width=.1, slope1=10, slope2=15)
+visualizeSchool(start.point=.2, width=.1, review.slope=10, advanced.slope=15)
 
 }
+\seealso{
+[visualizeZPD()], [visualizeHome()]. [visualizeContext()], and [visualizeTrajectories()]
+
+Other visualizations: 
+\code{\link{visualizeContext}()},
+\code{\link{visualizeHome}()},
+\code{\link{visualizeTrajectories}()}
+}
+\concept{visualizations}

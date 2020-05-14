@@ -2,8 +2,8 @@
 
 export(ZPDGrowthTrajectories)
 export(describeTrajectories)
+export(visualizeContext)
 export(visualizeHome)
-export(visualizeLearning)
 export(visualizeSchool)
 export(visualizeTrajectories)
 export(visualizeZPD)

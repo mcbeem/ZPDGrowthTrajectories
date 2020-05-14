@@ -6,9 +6,13 @@
 #'  function. If needed, this object be converted internally to "long" format suitable for
 #'  \code{ggplot}.The function returns a \code{ggplot} object that can be modified with typical
 #'  \code{ggplot2} arguments.
+#'
 #' @param assignment a vector indicating which school curriculum, if any, was provided during
 #'  each time interval. If provided, vertical lines are added to indicate transitions. Defaults
 #'  to NULL.
+#'
+#' @family visualizations
+#' @seealso [visualizeZPD()], [visualizeHome()], [visualizeSchool()]. [visualizeContext()]]
 #'
 #' @importFrom utils tail
 #'

@@ -4,10 +4,12 @@
 \alias{visualizeHome}
 \title{Function for visualizing the home curriculum.}
 \usage{
-visualizeHome(rate, max = 1)
+visualizeHome(home.learning.decay.rate, max = 1)
 }
 \arguments{
-\item{rate}{Scalar decay rate of the exponential function describing the home curriulum}
+\item{home.learning.decay.rate}{Scalar, the exponential decay parameter for the home learning function.
+Larger values indicate a more rapid drop-off. Must be greater than 1. The functions \code{visualizHome()}
+and \code{visualizeContext()} can be used to visualize, understand, and select appropriate values.}
 
 \item{max}{The maximum value to plot on the x-axis; defaults to 1}
 }
@@ -20,5 +22,14 @@ visualizeHome(rate, max = 1)
    \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
 }
 \examples{
-visualizeHome(rate=5)
+visualizeHome(home.learning.decay.rate=5)
 }
+\seealso{
+[visualizeZPD()], [visualizeSchool()]. [visualizeContext()], and [visualizeTrajectories()]
+
+Other visualizations: 
+\code{\link{visualizeContext}()},
+\code{\link{visualizeSchool}()},
+\code{\link{visualizeTrajectories}()}
+}
+\concept{visualizations}

@@ -1,28 +1,38 @@
 #' Function for visualizing the school curriculum.
 #'
-#'  \code{visualizeSchool} plots school curriculum. It is useful for exploring
+#'  \code{visualizeSchool} plots the school curriculum. It is useful for exploring
 #'    the consequences of the \code{curriculum.start.points}, \code{curriculum.widths},
 #'    \code{curriculum.lower.slope}, \code{curriculum.upper.slope}, and \code{alpha} arguments to
 #'    \code{ZPDGrowthTrajectories()}. The function returns a
 #'    \code{ggplot} object that can be modified with typical \code{ggplot2} arguments.
 #'
-#' @param slope1 The steepness of the school curriculum cutoff at the lower range.
-#'   Conceptually controls the amount of review content.
-#' @param slope2 The slope of the school curriculum at the upper range.
-#'   Conceptually controls the amount of advanced content.
 #' @param start.point The point at which the curriculum reaches full intensity. This value would become one of
-#'  the elements of the curriculum.start.points argument to \code{ZPDGrowthTrajectories}.
+#'  the elements of the \code{curriculum.start.points} argument to \code{ZPDGrowthTrajectories()}.
+#'
 #' @param width The highest point at which the curriculum is at full intensity. This value would become one of
-#'  the elements of the curriculum.widths argument to \code{ZPDGrowthTrajectories}.
+#'  the elements of the \code{curriculum.widths} argument to \code{ZPDGrowthTrajectories()}.
+#'
+#' @param review.slope The steepness of the school curriculum cutoff at the lower range.
+#'   Conceptually controls the amount of review content. This value would become one of
+#'  the elements of the \code{curriculum.review.slopes} argument to \code{ZPDGrowthTrajectories()}.
+#'
+#' @param advanced.slope The slope of the school curriculum at the upper range.
+#'   Conceptually controls the amount of advanced content. This value would become one of
+#'  the elements of the \code{curriculum.advanced.slopes} argument to \code{ZPDGrowthTrajectories()}.
 #'
 #' @examples
-#' visualizeSchool(start.point=.2, width=.1, slope1=10, slope2=15)
+#' visualizeSchool(start.point=.2, width=.1, review.slope=10, advanced.slope=15)
+#'
+#' @family visualizations
+#' @seealso [visualizeZPD()], [visualizeHome()]. [visualizeContext()], and [visualizeTrajectories()]
 #'
 #' @export
 
-visualizeSchool <- function(start.point, width, slope1, slope2) {
+visualizeSchool <- function(start.point, width, review.slope, advanced.slope) {
 
-  #x <- seq(0, 1, length.out=10000)
+  # rename objects
+  slope1 <- review.slope
+  slope2 <- advanced.slope
 
   x <- seq(min(0, 2*start.point - (1/slope1)),
            max(1, 2*start.point+width + (1/slope2)),

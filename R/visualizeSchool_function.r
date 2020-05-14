@@ -20,11 +20,12 @@
 #'   Conceptually controls the amount of advanced content. This value would become one of
 #'  the elements of the \code{curriculum.advanced.slopes} argument to \code{ZPDGrowthTrajectories()}.
 #'
+#' @return An object of class \code{ggplot2}
+#'
 #' @examples
 #' visualizeSchool(start.point=.2, width=.1, review.slope=10, advanced.slope=15)
 #'
 #' @family visualizations
-#' @seealso [visualizeZPD()], [visualizeHome()]. [visualizeContext()], and [visualizeTrajectories()]
 #'
 #' @export
 

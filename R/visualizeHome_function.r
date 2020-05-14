@@ -12,8 +12,9 @@
 #'
 #' @param max The maximum value to plot on the x-axis; defaults to 1
 #'
+#' @return An object of class \code{ggplot2}
+#'
 #' @family visualizations
-#' @seealso [visualizeZPD()], [visualizeSchool()]. [visualizeContext()], and [visualizeTrajectories()]
 #'
 #' @examples
 #' visualizeHome(home.learning.decay.rate=5)

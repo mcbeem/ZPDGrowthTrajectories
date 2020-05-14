@@ -66,8 +66,9 @@
 #' @param annotate logical. should the figure be annotated with the row numbers of the school
 #'   curricula? defaults to FALSE
 #'
+#' @return An object of class \code{ggplot2}
+#'
 #' @family visualizations
-#' @seealso [visualizeZPD()], [visualizeSchool()], [visualizeHome()], and [visualizeTrajectories()]
 #'
 #' @importFrom stats uniroot
 #'

@@ -12,7 +12,6 @@
 #'  to NULL.
 #'
 #' @family visualizations
-#' @seealso [visualizeZPD()], [visualizeHome()], [visualizeSchool()]. [visualizeContext()]]
 #'
 #' @importFrom utils tail
 #'

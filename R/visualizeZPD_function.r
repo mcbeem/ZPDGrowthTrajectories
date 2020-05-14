@@ -8,9 +8,16 @@
 #'    can be modified with typical \code{ggplot2} arguments.
 #'
 #' @param achievement the current level of achievement, defaults to 0.3
+#'
 #' @param zpd.width the radius of the ZPD.
+#'
 #' @param zpd.offset scalar value, measured on the same scale as achievement, describing where the ZPD peaks
 #'   relative to the current achievement.
+#'
+#' @return An object of class \code{ggplot2}
+#'
+#' @family visualizations
+#'
 #' @examples
 #' visualizeZPD(achievement=.3, zpd.offset=.02, zpd.width=.06)
 #' @export

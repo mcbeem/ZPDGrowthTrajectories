@@ -33,7 +33,7 @@ should be computed only for students receiving specific version(s) of the curric
 1 or 2 of the curriculum. If provided, \code{benchmarks} must also be specified. Defaults to NULL.}
 }
 \value{
-An object of class \code{"ZPD", "data.frame"} in "long" format
+An object of class \code{"ZPD", "data.frame"}
 }
 \description{
 \code{rescaleTrajectories} performs linear rescaling of the synthetic achievement values
@@ -125,4 +125,7 @@ benchmarks <- matrix(c(
 y3 <- rescaleTrajectories(y, benchmarks=benchmarks)
 describeTrajectories(y3, byVersion=FALSE)
 
+}
+\seealso{
+\code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
 }

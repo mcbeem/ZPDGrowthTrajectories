@@ -157,16 +157,16 @@ curriculum.start.points <- list(
 
 curriculum.widths <- list(
   # "typical curriculum" widths for K and first grade
-  matrix(c(.03, .03), nrow=2, ncol=1),
+  matrix(c(.04, .04), nrow=2, ncol=1),
   # "advanced curriculum" widths for K and first grade
-  matrix(c(.04, .04), nrow=2, ncol=1)
+  matrix(c(.05, .05), nrow=2, ncol=1)
 )
 
 curriculum.review.slopes <- list(
   # "typical curriculum" review slopes for K and first grade
-  matrix(c(15, 15), nrow=2, ncol=1),
+  matrix(c(30, 30), nrow=2, ncol=1),
   # "advanced curriculum" review slopes for K and first grade
-  matrix(c(30, 30), nrow=2, ncol=1)
+  matrix(c(60, 60), nrow=2, ncol=1)
 )
 
 curriculum.advanced.slopes <- list(
@@ -202,4 +202,6 @@ head(y)
 \code{\link{visualizeTrajectories}} for plotting the trajectories
 
 \code{\link{describeTrajectories}} for calculating summary statistics
+
+\code{\link{rescaleTrajectories}} for linear rescaling of the trajectories
 }

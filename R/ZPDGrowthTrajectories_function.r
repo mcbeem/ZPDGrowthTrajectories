@@ -103,9 +103,12 @@
 #'
 #' @seealso \code{\link{describeTrajectories}} for calculating summary statistics
 #'
+#' @seealso \code{\link{rescaleTrajectories}} for linear rescaling of the trajectories
+#'
 #' @importFrom reshape2 melt
 #' @importFrom stats approx
 #' @importFrom dplyr select
+#' @importFrom checkmate qtest
 #'
 #' @export
 
@@ -138,16 +141,16 @@
 #'
 #' curriculum.widths <- list(
 #'   # "typical curriculum" widths for K and first grade
-#'   matrix(c(.03, .03), nrow=2, ncol=1),
+#'   matrix(c(.04, .04), nrow=2, ncol=1),
 #'   # "advanced curriculum" widths for K and first grade
-#'   matrix(c(.04, .04), nrow=2, ncol=1)
+#'   matrix(c(.05, .05), nrow=2, ncol=1)
 #' )
 #'
 #' curriculum.review.slopes <- list(
 #'   # "typical curriculum" review slopes for K and first grade
-#'   matrix(c(15, 15), nrow=2, ncol=1),
+#'   matrix(c(30, 30), nrow=2, ncol=1),
 #'   # "advanced curriculum" review slopes for K and first grade
-#'   matrix(c(30, 30), nrow=2, ncol=1)
+#'   matrix(c(60, 60), nrow=2, ncol=1)
 #' )
 #'
 #' curriculum.advanced.slopes <- list(
@@ -187,6 +190,8 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
                                   integration.points=250, threshold=.00001,
                                   verbose=TRUE) {
 
+  `%notin%` <- Negate(`%in%`)
+
   # rename objects
   slope1 <- curriculum.review.slopes
   slope2 <- curriculum.advanced.slopes
@@ -197,36 +202,111 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
 
   ## Check for valid inputs ##
 
+  # are the curriculum objects all the same type?
+  if (all.equal(typeof(curriculum.start.points), typeof(curriculum.widths),
+            typeof(curriculum.review.slopes), typeof(curriculum.advanced.slopes)) == FALSE) {
+    stop("curriculum.start.points, curriculum.widths, curriculum.review.slopes, and curriculum.advanced.slopes must be the same type and must be either matrices or lists")}
+
+
+  # how many rows are in the curriculum objects?
+
+  if(typeof(curriculum.start.points)=="list") {
+    csp.rows <- sapply(curriculum.start.points, nrow)
+    cw.rows <- sapply(curriculum.widths, nrow)
+    crs.rows <- sapply(curriculum.review.slopes, nrow)
+    cas.rows <- sapply(curriculum.advanced.slopes, nrow)
+
+    csp.cols <- sapply(curriculum.start.points, ncol)
+    cw.cols <- sapply(curriculum.widths, ncol)
+    crs.cols <- sapply(curriculum.review.slopes, ncol)
+    cas.cols <- sapply(curriculum.advanced.slopes, ncol)
+
+  } else {
+    csp.rows <- nrow(curriculum.start.points)
+    cw.rows <- nrow(curriculum.widths)
+    crs.rows <- nrow(curriculum.review.slopes)
+    cas.rows <- nrow(curriculum.advanced.slopes)
+
+    csp.cols <- ncol(curriculum.start.points)
+    cw.cols <- ncol(curriculum.widths)
+    crs.cols <- ncol(curriculum.review.slopes)
+    cas.cols <- ncol(curriculum.advanced.slopes)
+  }
+
+  # test for equal numbers of rows in all curriculum objects
+  if(all.equal(csp.rows, cw.rows, crs.rows, cas.rows)==FALSE) {stop("curriculum.start.points, curriculum.widths, curriculum.review.slopes, and curriculum.advanced.slopes must all have the same number of rows")}
+  # test for two columns
+  if(all.equal(csp.cols, cw.cols, crs.cols, cas.cols, 2)==FALSE) {stop("curriculum.start.points, curriculum.widths, curriculum.review.slopes, and curriculum.advanced.slopes must all have two columns")}
+
+  # check for valid values in all curriculum objects
+  if (checkmate::qtest(unlist(curriculum.start.points), "N+[0,)")==FALSE) {stop("values in curriculum.start.points must be nonnegative numeric")}
+  if (checkmate::qtest(unlist(curriculum.widths), "N+(0,)")==FALSE) {stop("values in curriculum.widths must be positive numeric")}
+  if (checkmate::qtest(unlist(curriculum.review.slopes), "N+(0,)")==FALSE) {stop("values in curriculum.review.slopes must be positive numeric")}
+  if (checkmate::qtest(unlist(curriculum.advanced.slopes), "N+(0,)")==FALSE) {stop("values in curriculum.advanced.slopes must be positive numeric")}
+
+  # check if any review slope leg extends past zero
+  if(any(unlist(curriculum.start.points) - 1/unlist(curriculum.review.slopes) < 0)) {warning("at least one of the value combinations in curriculum.start.points and curriculum.review.slopes implies a school curriculum review leg that extends below zero. Is this what you intended?")}
+
+  # check if any review component is wider than grade-level component
+  if (any((1/unlist(curriculum.review.slopes)) > unlist(curriculum.widths))) {warning("at least one of the value combinations in curriculum.review.slopes and curriculum.widths implies that a review component of the curriculum is wider than the full-intensity portion. Is this what you intended?")}
+
+  # check if advanced component is wider than grade-level component
+  if (any((1/unlist(curriculum.advanced.slopes)) > unlist(curriculum.widths))) {warning("at least one of the value combinations in curriculum.advanced.slopes and curriculum.widths implies that an advanced component of the curriculum is wider than the full-intensity portion. Is this what you intended?")}
+
   # learn.rate home.env decay.rate  initial.ach: vector or scalar, [0,inf), length in compliance
+  if (checkmate::qtest(learn.rate, "N+[0,)")==FALSE) {stop("learn.rate must be a numeric vector of nonnegative values")}
+  if (checkmate::qtest(home.env, "N+[0,)")==FALSE) {stop("home.env must be a numeric vector of nonnegative values")}
+  if (checkmate::qtest(decay.rate, "N+[0,)")==FALSE) {stop("decay.rate must be a numeric vector of nonnegative values")}
+  if (checkmate::qtest(initial.ach, "N+[0,)")==FALSE) {stop("initial.ach must be a numeric vector of nonnegative values")}
 
-  # ZPD.width scalar > 0
-  # ZPD.offset scalar
+  # check ZPD parameters
+  if (checkmate::qtest(ZPD.width, "N1[0,)")==FALSE) {stop("ZPD.width must be a nonnegative numeric scalar")}
+  if (checkmate::qtest(ZPD.offset, "N1")==FALSE) {stop("ZPD.offset must be a numeric scalar")}
 
-  # home.learning.decay.rate scalar > 1. Check for implied max.achievement
+  # check that home.learning.decay.rate is numeric, length 1, greater than one, not NA
+  if (checkmate::qtest(home.learning.decay.rate, "N1(1,)")==FALSE) {stop("home.learning.decay.rate must be a scalar greater than 1")}
 
-  #curriculum.start.points curriculum.widths curriculum.review.slopes curriculum.advanced.slopes
-  #  all need to be matrices or lists, all with same dimensions
-  #  widths > 0, start.points [0,], slopes > 0, check vs width
+  # check that dosage is numeric, length 1, between 0 and 1, not NA
+  if (checkmate::qtest(dosage, "N1[0,1]")==FALSE) {stop("dosage must be a numeric scalar in the range [0, 1]")}
+  # warning if dosage is zero or one
+  if (dosage==0 | dosage == 1) {warning("dosage is set to 0 or 1; is this what was intended?")}
 
-  # assignment integer vector, highest value needs to match highest row in above. warning if some
-  #  values in above are not used
+  # check that threshold is numeric, length 1, greater than zero, not NA
+  if (checkmate::qtest(threshold, "N1(0,)")==FALSE) {stop("threshold must be a positive numeric scalar")}
 
-  #dosage scalar numeric range 0-1, warning at 0,1
+  # check that school.weight, home.weight, decay.weight are numeric, length 1, nonnegative, not NA
+  if (checkmate::qtest(school.weight, "N1[0,)")==FALSE) {stop("school.weight must be a nonnegative numeric scalar")}
+  if (checkmate::qtest(home.weight, "N1[0,)")==FALSE) {stop("home.weight must be a nonnegative numeric scalar")}
+  if (checkmate::qtest(decay.weight, "N1[0,)")==FALSE) {stop("decay.weight must be a nonnegative numeric scalar")}
 
-  #adaptive.curriculum=FALSE logical. if TRUE there must be >1 version of curriculum
+  # check that integration.points is integerlike, length 1, at least 100, not NA
+  if (checkmate::qtest(integration.points, "X1[100,)")==FALSE) {stop("integration.points must be a positive numeric scalar of at least 100")}
 
-  # which.curriculum=NULL must be vector, same length as assignment, and should match dimensionality
-  #  of curriculum objects. warning if not all versions are assigned
+  # check that adaptive.curriculum and verbose are logical length 1 non-NA
+  if (checkmate::qtest(adaptive.curriculum, "B1")==FALSE) {stop("adaptive.curriculum must be TRUE or FALSE")}
+  if (checkmate::qtest(verbose, "B1")==FALSE) {stop("verbose must be TRUE or FALSE")}
 
-  #school.weight home.weight decay.weight must be scalars [0,)
+  # checks for which.curriculum
+  if (!is.null(which.curriculum)) {
+    # check for length>1 and type of values
+    if(checkmate::qtest(which.curriculum, "X+")==FALSE) {stop("which.curriculum must either be NULL or an integer vector")}
 
-  # integration.points=250 integer, check against max.achievement for coverage, warning if insufficient
+    # check for valid values
+    if (any(which.curriculum %notin% 1:length(as.list(curriculum.start.points)))) {stop("which.curriculum contains out-of-range values")}
 
-  # threshold=.00001 warning if result is below max school curriculum + width
+    # check for length equality for learn.rate home.env decay.rate initial.ach and which.curriculum
+    if (!identical(length(learn.rate), length(home.env), length(decay.rate), length(initial.ach))) {stop("learn.rate, home.env, decay.rate, initial.ach, and which.curriculum must all have the same length")}
+    } else {
+       if (!identical(length(learn.rate), length(home.env), length(decay.rate), length(initial.ach))) {stop("learn.rate, home.env, decay.rate, and initial.ach must all have the same length")}
+  }
 
-  # verbose=TRUE check logical
+  # if adaptive.curriculum is TRUE, verify that there is more than one curriculum version
+  if (adaptive.curriculum==TRUE & length(as.list(curriculum.start.points)) < 2) {stop("adaptive.curriculum is TRUE, but only one version of the school curriculum was specified")}
 
-  # output.format="long" check "long" or "wide"
+  # assignment vector
+  if(checkmate::qtest(assignment, "X+[0,)")==FALSE) {stop("assignment must be an integer vector of nonnegative values")}
+  if(any(assignment[assignment>0] %notin% 1:csp.rows[1])) {stop("assignment contains an out-of-range value. the maximum value in assignment cannot exceed the number of rows in curriculum.start.points, curriculum.widths, curriculum.review.slopes, and curriculum.advanced.slopes")}
+  if(any(1:csp.rows[1] %notin% assignment[assignment>0])) {warning("not all of the curricula (rows) in curriculum.start.points are represented in assignment. Was this intended?")}
 
   # check for correspondence between adaptive.curriculum and versions of curriculum
   #  (if one version, curriculum.start.points and curriculum.widths are matrices,
@@ -331,6 +411,9 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
                                     curriculum.widths=curriculum.widths,
                                     slope2=slope2, rate=rate, threshold=threshold,
                                     integration.points=integration.points)
+
+  # check for adequate coverage of integration.points given maxachievement
+  if ((integration.points/maxachievement) < 150) {warning(paste0("The specified number of integration points may be too sparse. Suggest increasing integration.points to at least ", round(maxachievement*150, 0)))}
 
   for (i in 1:length(curriculum.start.points)) {
     school.lookup.table[[i]] <- build.school.lookup(integration.points=integration.points,
@@ -454,7 +537,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
     elapsed.time <- end.time-start.time
     time.unit <- units(elapsed.time)
 
-    message(paste0("\nExecution required ", round((end.time-start.time)[[1]],2), " ", time.unit, "."))
+    message(paste0("\nExecution required ", round((end.time-start.time)[[1]],2), " ", time.unit, ".\n"))
   }
 
 

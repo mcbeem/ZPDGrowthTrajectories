@@ -29,7 +29,9 @@
 #'   \code{c(1,2)} indicates that the rescaling should be based only on those students receiving versions
 #'   1 or 2 of the curriculum. If provided, \code{benchmarks} must also be specified. Defaults to NULL.
 #'
-#' @return An object of class \code{"ZPD", "data.frame"} in "long" format
+#' @return An object of class \code{"ZPD", "data.frame"}
+#'
+#' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
 #'
 #' @importFrom checkmate qtest
 #' @importFrom stats lm coef

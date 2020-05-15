@@ -28,6 +28,7 @@
 #' @seealso \code{\link{ZPDGrowthTrajectories}} for simulating growth trajectories.
 #'
 #' @importFrom utils tail
+#' @importFrom checkmate qtest
 #'
 #' @examples
 #' # learning rate

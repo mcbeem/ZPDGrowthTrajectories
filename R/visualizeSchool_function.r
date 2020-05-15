@@ -38,10 +38,10 @@
 visualizeSchool <- function(start.point, width, review.slope, advanced.slope) {
 
   # check arguments
-  if(checkmate::qtest(start.point, "n?[0,)")==FALSE) {stop("start.point must be a non-negative scalar")}
-  if(checkmate::qtest(width, "n?(0,)")==FALSE) {stop("width must be a positive scalar")}
-  if(checkmate::qtest(review.slope, "n?(0,)")==FALSE) {stop("review.slope must be a positive scalar")}
-  if(checkmate::qtest(advanced.slope, "n?(0,)")==FALSE) {stop("advanced.slope must be a positive scalar")}
+  if(checkmate::qtest(start.point, "N?[0,)")==FALSE) {stop("start.point must be a non-negative scalar")}
+  if(checkmate::qtest(width, "N?(0,)")==FALSE) {stop("width must be a positive scalar")}
+  if(checkmate::qtest(review.slope, "N?(0,)")==FALSE) {stop("review.slope must be a positive scalar")}
+  if(checkmate::qtest(advanced.slope, "N?(0,)")==FALSE) {stop("advanced.slope must be a positive scalar")}
 
   if (start.point - 1/review.slope < 0) {warning("the combination of start.point and review.slope implies that the school curriculum review leg extends below zero. Is this what you intended?")}
   if (1/review.slope > width) {warning("the combination of review.slope and width values you have specified implies that the review component of the curriculum is wider than the full-intensity portion. Is this what you intended?")}

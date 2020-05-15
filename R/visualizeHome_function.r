@@ -29,8 +29,8 @@ visualizeHome <- function(home.learning.decay.rate, max=1) {
 
   # check arguments
 
- if(checkmate::qtest(home.learning.decay.rate, "n?(1,)")==FALSE) {stop("home.learning.decay.rate must be a scalar greater than 1")}
- if(checkmate::qtest(max, "n?(0,)")==FALSE) {stop("max must be a scalar greater than 0")}
+ if(checkmate::qtest(home.learning.decay.rate, "N?(1,)")==FALSE) {stop("home.learning.decay.rate must be a scalar greater than 1")}
+ if(checkmate::qtest(max, "N?(0,)")==FALSE) {stop("max must be a scalar greater than 0")}
 
   rate <- home.learning.decay.rate
 

@@ -14,6 +14,8 @@
 #' @param showTransitions Logical. Should vertical lines be drawn when the school curriculum changes?
 #'   Defaults to FALSE
 #'
+#' @param timerange Optional numeric vector providing limits for the x axis. Defaults to NULL.
+#'
 #' @family visualizations
 #'
 #' @seealso \code{\link{describeTrajectories}} for calculating summary statistics of the generated
@@ -25,13 +27,22 @@
 #'
 #' @export
 
-  visualizeTrajectories <- function(trajectories, showTransitions=FALSE) {
+  visualizeTrajectories <- function(trajectories, showTransitions=FALSE, timerange=NULL) {
 
   # check if trajectories is class ZPD, if not stop
   if(!("ZPD" %in% class(trajectories))) {stop("Object supplied to trajectories argument is not ZPDGrowthTrajectories() output")}
 
   # check if showTransitions is logical
-  if (is.logical(showTransitions) == FALSE) {stop("showTransitions must be TRUE or FALSE")}
+
+  if(checkmate::qtest(showTransitions, "B1")==FALSE) {stop("showTransitions must be TRUE or FALSE")}
+
+
+  if (is.null(timerange)==FALSE) {
+    if(checkmate::qtest(timerange, "N2[0,)")==FALSE) {stop("timerange must either be NULL or a nonnegative vector of length 2")}
+    if (any(timerange > max(trajectories$time))) {stop("a value in timerange exceeds the range of time points included in trajectories")}
+    if (timerange[2] <= timerange[1]) {stop("values supplied to timerange must be in ascending order")}
+  }
+
 
   # check to see if the trajectories are in long or wide format
   # if long, it will have 9 columns
@@ -48,11 +59,22 @@
     trajectories <- trajectories[order(trajectories$id),]
   }
 
-  p <- ggplot2::ggplot(data=trajectories, ggplot2::aes(x=time, y=achievement, color=factor(id)))+
-    ggplot2::geom_line(show.legend=FALSE, size=.5, alpha=.5) +
-    ggplot2::geom_hline(yintercept=0, col="gray")+ggplot2::geom_vline(xintercept=0, col="gray")+
-    ggplot2::theme(panel.background=ggplot2::element_blank(), panel.grid.major=ggplot2::element_blank(),
+  if (!is.null(timerange)) {
+
+    p <- ggplot2::ggplot(data=trajectories[trajectories$time >= timerange[1] & trajectories$time <= timerange[2],],
+                         ggplot2::aes(x=time, y=achievement, color=factor(id)))+
+      ggplot2::geom_line(show.legend=FALSE, size=.5, alpha=.5) +
+      ggplot2::geom_hline(yintercept=0, col="gray")+ggplot2::geom_vline(xintercept=0, col="gray")+
+      ggplot2::theme(panel.background=ggplot2::element_blank(), panel.grid.major=ggplot2::element_blank(),
                    panel.grid.minor=ggplot2::element_blank())
+  } else {
+
+    p <- ggplot2::ggplot(data=trajectories, ggplot2::aes(x=time, y=achievement, color=factor(id)))+
+      ggplot2::geom_line(show.legend=FALSE, size=.5, alpha=.5) +
+      ggplot2::geom_hline(yintercept=0, col="gray")+ggplot2::geom_vline(xintercept=0, col="gray")+
+      ggplot2::theme(panel.background=ggplot2::element_blank(), panel.grid.major=ggplot2::element_blank(),
+                     panel.grid.minor=ggplot2::element_blank())
+  }
 
   if (showTransitions==TRUE) {
 
@@ -66,6 +88,10 @@
     index <- which(assignment != lag.assignment)
 
     p <- p + ggplot2::geom_vline(xintercept=index, alpha=.25)
+  }
+
+  if (!is.null(timerange)) {
+    p <- p + ggplot2::coord_cartesian(xlim=timerange)
   }
 
   return(p)

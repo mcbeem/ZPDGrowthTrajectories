@@ -35,12 +35,11 @@ describeTrajectories <- function(trajectories, byTransition=TRUE, byVersion=TRUE
 
   if (checkmate::qtest(byVersion, "b1") == FALSE) {stop("byVersion must be TRUE or FALSE")}
   if (checkmate::qtest(byTransition, "b1") == FALSE) {stop("byTransition must be TRUE or FALSE")}
+
   if (!is.null(times)) {
-    if (checkmate::qtest(times, "i+[1,)") == FALSE) {stop("times must be an integer vector containing positive values")}
+    if (checkmate::qtest(times, "i+[1,)") == FALSE) {stop("times must either be NULL or an integer vector containing positive values")}
+    if (max(times) > max(trajectories$assignment)) {stop("a value in times exceeds the range of time points included in trajectories")}
   }
-
-  if (max(times) > max(trajectories$assignment)) {stop("a value in times exceeds the range of time points included in trajectories")}
-
 
   # check to see if the trajectories are in long or wide format
   # if long, it will have 9 columns

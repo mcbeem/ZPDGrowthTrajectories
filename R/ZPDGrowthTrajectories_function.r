@@ -94,8 +94,6 @@
 #'
 #' @param verbose logical, should status updates be printed to the console? Defaults to TRUE.
 #'
-#' @param output.format Format of the results, "long" for long format, "wide" for wide. Defaults to "long".
-#'
 #' @return An object of class \code{ZPD, data.frame}
 #'
 #' @seealso \code{\link{visualizeContext}}, \code{\link{visualizeZPD}}, \code{\link{visualizeHome}}, and
@@ -174,10 +172,9 @@
 #'                            adaptive.curriculum=FALSE,
 #'                            which.curriculum=which.curriculum,
 #'                            school.weight=.5, home.weight=1, decay.weight=.05,
-#'                            verbose=TRUE, output.format="long")
+#'                            verbose=TRUE)
 #'
-#' describeTrajectories(y, byVersion=FALSE)
-#' visualizeTrajectories(y)
+#' head(y)
 
 ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
                                   ZPD.width, ZPD.offset,
@@ -188,7 +185,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
                                   adaptive.curriculum=FALSE, which.curriculum=NULL,
                                   school.weight, home.weight, decay.weight,
                                   integration.points=250, threshold=.00001,
-                                  verbose=TRUE, output.format="long") {
+                                  verbose=TRUE) {
 
   # rename objects
   slope1 <- curriculum.review.slopes
@@ -427,28 +424,31 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
   names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
                           "version", paste("time", seq(1:times), sep=""))
 
-  if (output.format=="long") {
 
-    if (verbose==TRUE) {message("Restructuring output from wide to long.")}
 
-    achievement <- reshape2::melt(achievement, id.vars=1:6)
-    achievement[,7] <- rep(seq(1:times), each=length(learn.rate))
-    names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
+  if (verbose==TRUE) {message("Restructuring output from wide to long.")}
+
+  achievement <- reshape2::melt(achievement, id.vars=1:6)
+  achievement[,7] <- rep(seq(1:times), each=length(learn.rate))
+  names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
                             "version", "time", "achievement")
-    achievement <- achievement[order(achievement$id),]
+  achievement <- achievement[order(achievement$id),]
 
-    achievement$assignment <- rep(assignment, times=length(learn.rate))
+  achievement$assignment <- rep(assignment, times=length(learn.rate))
 
-    if (adaptive.curriculum==TRUE) {
-      for (i in 1:max(assignment)) {
-        achievement$version[achievement$assignment==i] <- round(stats::approx(x=which.school.lookup[,1], y=which.school.lookup[,1+i],
+  if (adaptive.curriculum==TRUE) {
+    for (i in 1:max(assignment)) {
+      achievement$version[achievement$assignment==i] <- round(stats::approx(x=which.school.lookup[,1], y=which.school.lookup[,1+i],
                                                                           xout=achievement$achievement[achievement$assignment==i])$y, 0)
-      }
-
-      achievement$version[achievement$assignment==0] <- NA
-
     }
+
+    achievement$version[achievement$assignment==0] <- NA
+
   }
+
+    # reorder variables
+    achievement <- dplyr::select(achievement, id, learn.rate, home.env, decay.rate, initial.ach, version, time, assignment, achievement)
+
 
 
   if (verbose==TRUE) {
@@ -460,8 +460,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
     message(paste0("\nExecution required ", round((end.time-start.time)[[1]],2), " ", time.unit, "."))
   }
 
-  # reorder variables
-  achievement <- dplyr::select(achievement, id, learn.rate, home.env, decay.rate, initial.ach, version, time, assignment, achievement)
+
 
   class(achievement) = c("ZPD", "data.frame")
   return(achievement)

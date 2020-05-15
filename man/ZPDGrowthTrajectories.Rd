@@ -25,8 +25,7 @@ ZPDGrowthTrajectories(
   decay.weight,
   integration.points = 250,
   threshold = 1e-05,
-  verbose = TRUE,
-  output.format = "long"
+  verbose = TRUE
 )
 }
 \arguments{
@@ -115,8 +114,6 @@ as a growth rate. The max achievement to be populated is the value at which the 
 Defaults to .00001.}
 
 \item{verbose}{logical, should status updates be printed to the console? Defaults to TRUE.}
-
-\item{output.format}{Format of the results, "long" for long format, "wide" for wide. Defaults to "long".}
 }
 \value{
 An object of class \code{ZPD, data.frame}
@@ -194,10 +191,9 @@ y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
                            adaptive.curriculum=FALSE,
                            which.curriculum=which.curriculum,
                            school.weight=.5, home.weight=1, decay.weight=.05,
-                           verbose=TRUE, output.format="long")
+                           verbose=TRUE)
 
-describeTrajectories(y, byVersion=FALSE)
-visualizeTrajectories(y)
+head(y)
 }
 \seealso{
 \code{\link{visualizeContext}}, \code{\link{visualizeZPD}}, \code{\link{visualizeHome}}, and

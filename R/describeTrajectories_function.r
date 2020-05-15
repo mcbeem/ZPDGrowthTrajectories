@@ -26,6 +26,76 @@
 #' @importFrom stats median sd
 #' @importFrom checkmate qtest
 #'
+#' @examples
+#'
+#' # learning rate
+#' learn.rate <- c(.08, .10, .12, .18)
+#'
+#' # decay rate
+#' decay.rate <- c(.04, .03, .02, .01)
+#'
+#' # initial achievement
+#' initial.ach <- rep(0, times=4)
+#'
+#' # quality of home environment
+#' home.env <- c(.06, .12, .15, .20)
+#'
+#' # assignment object simulating starting kindergarten on time 201
+#' #  Kindergarten for 200 days, followed by 100 days of summer
+#' #  then 200 days of first grade
+#' assignment <- c(rep(0, times=200), rep(1, times=200),
+#'                 rep(0, times=100), rep(2, times=200))
+#'
+#' # define school curriculum
+#' curriculum.start.points <- list(
+#'     # "typical curriculum" start points for K and first grade
+#'   matrix(c(.2, .26), nrow=2, ncol=1),
+#'     # "advanced curriculum" start points for K and first grade
+#'   matrix(c(.22, .29), nrow=2, ncol=1)
+#' )
+#'
+#' curriculum.widths <- list(
+#'   # "typical curriculum" widths for K and first grade
+#'   matrix(c(.03, .03), nrow=2, ncol=1),
+#'   # "advanced curriculum" widths for K and first grade
+#'   matrix(c(.04, .04), nrow=2, ncol=1)
+#' )
+#'
+#' curriculum.review.slopes <- list(
+#'   # "typical curriculum" review slopes for K and first grade
+#'   matrix(c(15, 15), nrow=2, ncol=1),
+#'   # "advanced curriculum" review slopes for K and first grade
+#'   matrix(c(30, 30), nrow=2, ncol=1)
+#'   )
+#'
+#' curriculum.advanced.slopes <- list(
+#'   # "typical curriculum" advanced slopes for K and first grade
+#'   matrix(c(50, 50), nrow=2, ncol=1),
+#'   # "advanced curriculum" advanced slopes for K and first grade
+#'   matrix(c(25, 25), nrow=2, ncol=1)
+#'   )
+#'
+#'  # students 1 and 2 get typical curriculum, 3 and 4 get advanced
+#'  which.curriculum <- c(1,1,2,2)
+#'
+#'  y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
+#'                         decay.rate=decay.rate, initial.ach=initial.ach,
+#'                         ZPD.width=.05, ZPD.offset=.02,
+#'                         home.learning.decay.rate=6,
+#'                         curriculum.start.points=curriculum.start.points,
+#'                         curriculum.widths=curriculum.widths,
+#'                         curriculum.review.slopes=curriculum.review.slopes,
+#'                         curriculum.advanced.slopes=curriculum.advanced.slopes,
+#'                         assignment=assignment, dosage=.8,
+#'                         adaptive.curriculum=FALSE,
+#'                         which.curriculum=which.curriculum,
+#'                         school.weight=.5, home.weight=1, decay.weight=.05,
+#'                         verbose=TRUE)
+#
+#' describeTrajectories(y, byVersion=FALSE)
+#'
+#' describeTrajectories(y, byTransition=FALSE, times=c(100, 300, 650))
+#'
 #' @export
 
 describeTrajectories <- function(trajectories, byTransition=TRUE, byVersion=TRUE, times=NULL) {
@@ -33,27 +103,12 @@ describeTrajectories <- function(trajectories, byTransition=TRUE, byVersion=TRUE
   # check if trajectories is class ZPD, if not stop
   if(!("ZPD" %in% class(trajectories))) {stop("Object supplied to trajectories argument is not ZPDGrowthTrajectories() output")}
 
-  if (checkmate::qtest(byVersion, "b1") == FALSE) {stop("byVersion must be TRUE or FALSE")}
-  if (checkmate::qtest(byTransition, "b1") == FALSE) {stop("byTransition must be TRUE or FALSE")}
+  if (checkmate::qtest(byVersion, "B1") == FALSE) {stop("byVersion must be TRUE or FALSE")}
+  if (checkmate::qtest(byTransition, "B1") == FALSE) {stop("byTransition must be TRUE or FALSE")}
 
   if (!is.null(times)) {
-    if (checkmate::qtest(times, "i+[1,)") == FALSE) {stop("times must either be NULL or an integer vector containing positive values")}
-    if (max(times) > max(trajectories$assignment)) {stop("a value in times exceeds the range of time points included in trajectories")}
-  }
-
-  # check to see if the trajectories are in long or wide format
-  # if long, it will have 9 columns
-  # if wide format, flip to long
-
-  if (ncol(trajectories) != 9) {
-    nstudents <- nrow(trajectories)
-    times <- ncol(trajectories)-6
-
-    trajectories <- reshape2::melt(trajectories, id.vars=1:6)
-    trajectories[,7] <- rep(seq(1:times), each=nstudents)
-    names(trajectories) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
-                             "curriculum", "time", "achievement")
-    trajectories <- trajectories[order(trajectories$id),]
+    if (checkmate::qtest(times, "X+[1,)") == FALSE) {stop("times must either be NULL or an integer vector containing positive values")}
+    if (max(times) > max(trajectories$time)) {stop("a value in times exceeds the range of time points included in trajectories")}
   }
 
   # get assignment object from ZPDGrowthTrajectories output

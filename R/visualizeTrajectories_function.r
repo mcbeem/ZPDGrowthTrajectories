@@ -44,21 +44,6 @@
   }
 
 
-  # check to see if the trajectories are in long or wide format
-  # if long, it will have 9 columns
-  # if wide format, flip to long
-
-  if (ncol(trajectories) != 9) {
-    nstudents <- nrow(trajectories)
-    times <- ncol(trajectories)-6
-
-    trajectories <- reshape2::melt(trajectories, id.vars=1:6)
-    trajectories[,7] <- rep(seq(1:times), each=nstudents)
-    names(trajectories) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
-                             "curriculum", "time", "achievement")
-    trajectories <- trajectories[order(trajectories$id),]
-  }
-
   if (!is.null(timerange)) {
 
     p <- ggplot2::ggplot(data=trajectories[trajectories$time >= timerange[1] & trajectories$time <= timerange[2],],

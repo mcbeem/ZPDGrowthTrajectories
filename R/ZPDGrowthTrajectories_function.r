@@ -424,10 +424,7 @@ ZPDGrowthTrajectories <- function(learn.rate, home.env, decay.rate, initial.ach,
   names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",
                           "version", paste("time", seq(1:times), sep=""))
 
-
-
-  if (verbose==TRUE) {message("Restructuring output from wide to long.")}
-
+  # restructure data from wide to long
   achievement <- reshape2::melt(achievement, id.vars=1:6)
   achievement[,7] <- rep(seq(1:times), each=length(learn.rate))
   names(achievement) <- c("id", "learn.rate", "home.env", "decay.rate", "initial.ach",

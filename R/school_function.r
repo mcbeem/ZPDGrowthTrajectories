@@ -17,7 +17,7 @@
 school <- function(x, slope1, slope2, start, end) {
   slope2 <- -1*slope2
   # define piecewise function
-  ifelse(x > start & x < end, 1,
+  ifelse(x >= start & x <= end, 1,
          ifelse(x > start - (1/slope1) & x <  start, slope1*x - slope1*start + 1,
                 ifelse(x > end & x < end + (1/(-1*slope2)) , slope2*x - slope2*end + 1,
                        0)))

@@ -38,21 +38,32 @@
 visualizeSchool <- function(start.point, width, review.slope, advanced.slope) {
 
   # check arguments
-  if(checkmate::qtest(start.point, "N?[0,)")==FALSE) {stop("start.point must be a non-negative scalar")}
-  if(checkmate::qtest(width, "N?(0,)")==FALSE) {stop("width must be a positive scalar")}
-  if(checkmate::qtest(review.slope, "N?(0,)")==FALSE) {stop("review.slope must be a positive scalar")}
-  if(checkmate::qtest(advanced.slope, "N?(0,)")==FALSE) {stop("advanced.slope must be a positive scalar")}
+  # all must be numeric non-NA length one. all must be positive; start.point can be zero
+  if(checkmate::qtest(start.point, "N1[0,)")==FALSE) {stop("start.point must be a non-negative scalar")}
+  if(checkmate::qtest(width, "N1(0,)")==FALSE) {stop("width must be a positive scalar")}
+  if(checkmate::qtest(review.slope, "N1(0,)")==FALSE) {stop("review.slope must be a positive scalar")}
+  if(checkmate::qtest(advanced.slope, "N1(0,)")==FALSE) {stop("advanced.slope must be a positive scalar")}
 
+  # check if review slope leg extends past zero
   if (start.point - 1/review.slope < 0) {warning("the combination of start.point and review.slope implies that the school curriculum review leg extends below zero. Is this what you intended?")}
+
+  # check if review component is wider than grade-level component
   if (1/review.slope > width) {warning("the combination of review.slope and width values you have specified implies that the review component of the curriculum is wider than the full-intensity portion. Is this what you intended?")}
+
+  # check if advanced component is wider than grade-level component
   if (1/advanced.slope > width) {warning("the combination of advanced.slope and width values you have specified implies that the advanced component of the curriculum is wider than the full-intensity portion. Is this what you intended?")}
 
   # rename objects
   slope1 <- review.slope
   slope2 <- advanced.slope
 
-  x <- seq(min(0, 2*start.point - (1/slope1)),
-           max(1, 2*start.point+width + (1/slope2)),
+  # scale autoscaled based on arguments with some space on each side
+  end.point <- start.point + width
+  space.left <- max((1/slope1), width/2)*2
+  space.right <- max((1/slope2), width/2)*2
+
+  x <- seq(max(start.point - space.left, 0),
+           end.point + space.right,
            length.out=10000)
 
   y <- school(x=x, slope1=slope1, slope2=slope2, start=start.point, end=start.point+width)
@@ -63,8 +74,10 @@ visualizeSchool <- function(start.point, width, review.slope, advanced.slope) {
   data <- data.frame(cbind(x,y))
 
   # calculate area to shade
-  shade <- rbind(c(0,0), subset(data, (x>min(0, 2*start.point - (1/slope1)) &
-                                         x<=  max(1, 2*start.point+width + (1/slope2)))), c(1, 0))
+  shade <- rbind(c(max(start.point - space.left, 0), 0),
+                 subset(data, (x >= max(0, start.point - space.left) &
+                                         x <= end.point + space.right)),
+                 c(end.point + space.right, 0))
 
   p <- ggplot2::ggplot(data=data, ggplot2::aes(x=x, y=y))+ggplot2::geom_line(alpha=.5)+
     ggplot2::geom_polygon(data=shade, ggplot2::aes(x,y), fill="blue", alpha=.1)+

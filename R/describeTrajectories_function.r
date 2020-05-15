@@ -100,15 +100,23 @@
 
 describeTrajectories <- function(trajectories, byTransition=TRUE, byVersion=TRUE, times=NULL) {
 
+  `%notin%` <- Negate(`%in%`)
+
   # check if trajectories is class ZPD, if not stop
   if(!("ZPD" %in% class(trajectories))) {stop("Object supplied to trajectories argument is not ZPDGrowthTrajectories() output")}
 
+  # check arguments
+
+  # check if byVersion is logical, length one, not NA
   if (checkmate::qtest(byVersion, "B1") == FALSE) {stop("byVersion must be TRUE or FALSE")}
+
+  # check if byTransition is logical, length one, not NA
   if (checkmate::qtest(byTransition, "B1") == FALSE) {stop("byTransition must be TRUE or FALSE")}
 
+  # if times is not NULL, check that it is an integer-like object of length 1+ containing no NAs
   if (!is.null(times)) {
     if (checkmate::qtest(times, "X+[1,)") == FALSE) {stop("times must either be NULL or an integer vector containing positive values")}
-    if (max(times) > max(trajectories$time)) {stop("a value in times exceeds the range of time points included in trajectories")}
+    if (any(times %notin% trajectories$time)) {stop("a value in times exceeds the range of time points included in trajectories")}
   }
 
   # get assignment object from ZPDGrowthTrajectories output
@@ -173,8 +181,3 @@ describeTrajectories <- function(trajectories, byTransition=TRUE, byVersion=TRUE
  return(summarytable)
 
 }
-
-
-
-
-

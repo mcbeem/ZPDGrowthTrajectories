@@ -103,22 +103,13 @@
 
   visualizeTrajectories <- function(trajectories, showTransitions=FALSE, timerange=NULL, version=NULL) {
 
-  # thank you r-bloggers
-  # https://www.r-bloggers.com/the-notin-operator/
   `%notin%` <- Negate(`%in%`)
 
   # check if trajectories is class ZPD, if not stop
   if(!("ZPD" %in% class(trajectories))) {stop("Object supplied to trajectories argument is not ZPDGrowthTrajectories() output")}
 
   # check if showTransitions is logical
-
   if(checkmate::qtest(showTransitions, "B1")==FALSE) {stop("showTransitions must be TRUE or FALSE")}
-
-  # if version is provided, it must be integer-line with no NA and length 1, and values in range
-  if (!is.null(version)) {
-    if (qtest(version, "X>=1[1,)") == FALSE) {stop("version must be a postive scalar or vector containing integer values")}
-    if (any(!version %in% trajectories$version)) {stop("the specified value(s) of version are not found in trajectories object")}
-  }
 
   # if timerange is provided, it must be a numeric vector of length 2, no NAs, in ascending order, and matching values
   if (is.null(timerange)==FALSE) {
@@ -127,7 +118,14 @@
     if (timerange[2] <= timerange[1]) {stop("values supplied to timerange must be in ascending order")}
   }
 
+  # if version is provided, it must be integer-line with no NA and length 1, and values in range
   if (!is.null(version)) {
+    if (qtest(version, "X>=1[1,)") == FALSE) {stop("version must be a postive scalar or vector containing integer values")}
+    if (any(!version %in% trajectories$version)) {stop("the specified value(s) of version are not found in trajectories object")}
+  }
+
+  if (!is.null(version)) {
+    # restrict trajectories to the matching values of version
     trajectories <- trajectories[trajectories$version %in% version,]
   }
 

@@ -29,8 +29,11 @@ visualizeHome <- function(home.learning.decay.rate, max=1) {
 
   # check arguments
 
- if(checkmate::qtest(home.learning.decay.rate, "N?(1,)")==FALSE) {stop("home.learning.decay.rate must be a scalar greater than 1")}
- if(checkmate::qtest(max, "N?(0,)")==FALSE) {stop("max must be a scalar greater than 0")}
+  # check that home.learning.decay.rate is numeric, length 1, greater than one, not NA
+  if(checkmate::qtest(home.learning.decay.rate, "N1(1,)")==FALSE) {stop("home.learning.decay.rate must be a scalar greater than 1")}
+
+  # check that max is numeric, length 1, greater than 0, not NA
+  if(checkmate::qtest(max, "N1(0,)")==FALSE) {stop("max must be a scalar greater than 0")}
 
   rate <- home.learning.decay.rate
 
@@ -46,8 +49,9 @@ visualizeHome <- function(home.learning.decay.rate, max=1) {
   shade <- rbind(c(0,0), subset(data, (x>=0 & x<= max)), c(max, 0))
 
   p <- ggplot2::ggplot(data=data, ggplot2::aes(x=x, y=y))+ggplot2::geom_line(alpha=.5)+
-    ggplot2::geom_polygon(data=shade, ggplot2::aes(x,y), fill="blue", alpha=.1)+
-    ggplot2::theme_classic()+ggplot2::ylab("achievement")+ggplot2::xlab("intensity")
+     ggplot2::geom_polygon(data=shade, ggplot2::aes(x,y), fill="blue", alpha=.1)+
+     ggplot2::theme_classic()+ggplot2::ylab("achievement")+ggplot2::xlab("intensity")
 
   return(p)
+
 }

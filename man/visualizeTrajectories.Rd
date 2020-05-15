@@ -47,10 +47,10 @@ initial.ach <- rep(0, times=4)
 # quality of home environment
 home.env <- c(.06, .12, .15, .20)
 
-# assignment object simulating starting kindergarten on time 201
+# assignment object simulating starting kindergarten on time 801
 #  Kindergarten for 200 days, followed by 100 days of summer
 #  then 200 days of first grade
-assignment <- c(rep(0, times=200), rep(1, times=200),
+assignment <- c(rep(0, times=800), rep(1, times=200),
                 rep(0, times=100), rep(2, times=200))
 
 # define school curriculum
@@ -63,27 +63,27 @@ curriculum.start.points <- list(
 
 curriculum.widths <- list(
   # "typical curriculum" widths for K and first grade
-  matrix(c(.03, .03), nrow=2, ncol=1),
+  matrix(c(.04, .04), nrow=2, ncol=1),
   # "advanced curriculum" widths for K and first grade
-  matrix(c(.04, .04), nrow=2, ncol=1)
+  matrix(c(.05, .05), nrow=2, ncol=1)
 )
 
 curriculum.review.slopes <- list(
   # "typical curriculum" review slopes for K and first grade
-  matrix(c(15, 15), nrow=2, ncol=1),
+  matrix(c(30, 30), nrow=2, ncol=1),
   # "advanced curriculum" review slopes for K and first grade
-  matrix(c(30, 30), nrow=2, ncol=1)
-  )
+  matrix(c(60, 60), nrow=2, ncol=1)
+)
 
 curriculum.advanced.slopes <- list(
   # "typical curriculum" advanced slopes for K and first grade
   matrix(c(50, 50), nrow=2, ncol=1),
   # "advanced curriculum" advanced slopes for K and first grade
   matrix(c(25, 25), nrow=2, ncol=1)
-  )
+)
 
- # students 1 and 2 get typical curriculum, 3 and 4 get advanced
- which.curriculum <- c(1,1,2,2)
+# students 1 and 2 get typical curriculum, 3 and 4 get advanced
+which.curriculum <- c(1,1,2,2)
 
  y <- ZPDGrowthTrajectories(learn.rate=learn.rate, home.env=home.env,
                         decay.rate=decay.rate, initial.ach=initial.ach,
